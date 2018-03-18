@@ -5,11 +5,21 @@ with Heart; use Heart;
 with Network;
 
 package body ICD is
+   -- The initial upper bound for tachycardia when the system starts
+   TachyBound: Integer:=100;
+   -- The initial number of joules to deliver in the case of a ventricle fibrillation
+   JoulesToDeliver: Measures.Joules:=30;
+
+
+   AboveHeartRate: Constant Measures.BPM:=15;
+   TachycardiaDeliverTimes: Constant Integer:=2;
+
+
+
    function isTachycardia(HeartRate: in BPM) return Boolean is
-      HeartRateThreshold: Constant Integer:=100;
       Output: Boolean:=False;
    begin
-      if(HeartRate>HeartRateThreshold) then
+      if(HeartRate>TachyBound) then
          Output:= True;
       else
          Output:= False;
@@ -46,6 +56,38 @@ package body ICD is
          end if;
       return Output;
       end isVentricleFibrillation;
+
+   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: out ICDType) return Boolean is
+   begin
+      if Icd.IsOn then
+         return False;
+      else
+         TachyBound:=TachyB;
+         return True;
+      end if
+   end changeTachycardiaUpperBoundSet;
+
+   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: out ICDType) return Boolean is
+   begin
+      if Icd.IsOn then
+         return False;
+      else
+         JoulesToDeliver:=JoulesToD;
+         return True;
+      end if
+   end changeJoulesDeliverNumForVentricle_fibrillation;
+
+   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: out ICDType) return Boolean is
+   begin
+      if Icd.IsOn then
+         return False;
+      else
+         TachyB:=TachyBound;
+         JoulesToD:=JoulesToDeliver;
+         return True;
+      end if
+   end readSet;
+
 
    procedure updateHeartRateHistory(Hrh: in out HeartRateHistory; HeartRate: in BPM; CurrentTime: in TickCount) is
       HistoryPro: Integer:= Hrh'Last;
@@ -106,5 +148,6 @@ package body ICD is
       Put(Icd.HealthType'Image);
       New_Line;
    end Tick;
+
 
 end ICD;
