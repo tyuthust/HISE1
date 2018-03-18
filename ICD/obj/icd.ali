@@ -1,0 +1,115 @@
+V "GNAT Lib v2017"
+A -gnatA
+A -mtune=generic
+A -march=pentium4
+P ZX
+
+RN
+RV NO_IO
+RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
+
+U icd%b			icd.adb			c343cc8a NE OO PK IU
+W ada%s			ada.ads			ada.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W heart%s		heart.adb		heart.ali
+W measures%s		measures.adb		measures.ali
+
+U icd%s			icd.ads			80c7b8e2 EE NE OO PK IU
+W ada.tags%s		a-tags.adb		a-tags.ali
+W heart%s		heart.adb		heart.ali
+W measures%s		measures.adb		measures.ali
+W network%s		network.adb		network.ali
+
+D ada.ads		20170516105950 76789da1 ada%s
+D a-contai.ads		20170516105950 61e5e089 ada.containers%s
+D a-cdlili.ads		20170516105948 8e06b4f2 ada.containers.doubly_linked_lists%s
+D a-conhel.ads		20170516105950 20298884 ada.containers.helpers%s
+D a-except.ads		20170516105952 291912d5 ada.exceptions%s
+D a-finali.ads		20170516105954 bf4f806b ada.finalization%s
+D a-inteio.ads		20170516105954 f64b89a4 ada.integer_text_io%s
+D a-ioexce.ads		20170516105948 e4a01f64 ada.io_exceptions%s
+D a-iteint.ads		20170516105952 7c7305e9 ada.iterator_interfaces%s
+D a-stream.ads		20170516105952 119b8fb3 ada.streams%s
+D a-tags.ads		20170516105954 d3a89129 ada.tags%s
+D a-textio.ads		20170516105954 386df5d4 ada.text_io%s
+D a-tiinio.ads		20170516105950 aa04e5d6 ada.text_io.integer_io%s
+D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
+D heart.ads		20180317145212 9fbc8907 heart%s
+D icd.ads		20180318055156 c67f353a icd%s
+D icd.adb		20180318062022 ffa9fb6c icd%b
+D interfac.ads		20170516105950 5ab55268 interfaces%s
+D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
+D measures.ads		20180317145212 ab0ff7ab measures%s
+D network.ads		20180317145212 720bf374 network%s
+D principal.ads		20180317145212 ba98eec4 principal%s
+D system.ads		20170516105954 32a08138 system%s
+D s-atocou.ads		20170516105956 b45c2d8d system.atomic_counters%s
+D s-crtl.ads		20170516105948 0ebbdb71 system.crtl%s
+D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-ficobl.ads		20170516105956 078245e4 system.file_control_block%s
+D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
+D s-parame.ads		20170516105954 7e2a0d7f system.parameters%s
+D s-soflin.ads		20170516105950 14e1eb6c system.soft_links%s
+D s-stache.ads		20170516105954 a37c21ec system.stack_checking%s
+D s-stalib.ads		20170516105954 09bd3940 system.standard_library%s
+D s-stoele.ads		20170516105956 2dc34a04 system.storage_elements%s
+D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20170516105952 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20170516105954 1b7d22d2 system.wch_con%s
+X 1 ada.ads
+16K9*Ada 20e8 17|1r6 1r23 2r6 2r31
+X 7 a-inteio.ads
+18K13*Integer_Text_IO[13|46] 17|2w10 2r35
+X 9 a-iteint.ads
+24h9 Forward_Iterator
+32h9 Reversible_Iterator<24R9[3|69]>
+X 12 a-textio.ads
+49K13*Text_IO 471e16 17|1w10 1r27
+166U14*New_Line 17|40s9 42s9
+242U14*Put 17|39s9
+X 13 a-tiinio.ads
+66U14*Put 17|41s9[7|18]
+X 15 heart.ads
+7K9*Heart 39e11 16|2w6 2r17 17|4w6 4r17
+X 16 icd.ads
+7K9*ICD 29l5 29e8 17|6b14 71l5 71t8
+10E6*PatientHeartHealthType 10e77
+10n33*Healthy{10E6}
+10n42*Tachycardia{10E6}
+10n54*Ventricle_fibrillation{10E6}
+12i1*HISTORY_LENGTH{integer} 13r50
+13A6*HeartRateHistory(21|35R9)<integer> 21r42 25r46 28r31 17|19r45 49r49
+. 63r34
+17V10*isTachycardia{boolean} 17>24 17|7b13 17l8 17t21
+17i24 HeartRate{20|15I12} 17|7b27 11r10
+21V10*isVentricleFibrillation{boolean} 21>34 17|19b13 47l11 47t34
+21a34 Hrh{13A6} 17|19b37 24r33 25r23 25r35
+25U11*updateHeartRateHistory 25=34 25>63 25>81 17|49b14 61l8 61t30
+25a34 Hrh{13A6} 17|49b37 50r29 55r24 56m10 56r36 57r36 60m7 60r11
+25i63 HeartRate{20|15I12} 17|49b67 60r32
+25m81 CurrentTime{20|18M9} 17|49b86 60r51
+28U11*initHRH 28=19 17|63b14 70l8 70t15
+28a19 Hrh{13A6} 17|63b22 66r33 67m10 68m10
+X 17 icd.adb
+8i7 HeartRateThreshold{integer} 11r20
+9b7 Output{boolean} 12m10 14m10 16r14
+20i7 Sum{integer} 34m13 34r18 36m13 36r18 41r13 43r10
+21i7 Temp_Minus{integer} 25m10 33r13 34r22 36r22
+22b7 Output{boolean} 44m10 46r14
+24i11 I{integer} 25r27 25r39
+50i7 HistoryPro{integer} 55r13 56r14 56r40 57r40 58m10 58r22
+64i7 DefaultHR{20|15I12} 68r23
+66i11 I{integer} 67r14 68r14
+X 20 measures.ads
+3K9*Measures 16|3w6 3r20 17|3w6 20|34e13
+15I12*BPM{integer} 16|17r38 25r77 17|7r41 49r81 64r17
+18M9*TickCount 16|25r96 17|49r102 67r23 67r33
+X 21 network.ads
+6K9*Network 16|1w6 13r69 21|118e12
+35R9*RateRecord 16|13r77 21|38e14
+36i7*Rate{20|15I12} 17|25r30 25r44 56m28 56r54 60m24 68m17
+37m7*Time{20|18M9} 17|57m28 57r54 60m43 67m17
+

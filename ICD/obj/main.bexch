@@ -1,0 +1,25 @@
+[GENERATED OBJECT FILE]
+b__main.o
+[PROJECT FILES]
+C:\Users\rishe\Documents\ICD\icd.gpr
+20180318035122
+[BOUND OBJECT FILES]
+C:\Users\rishe\Documents\ICD\obj\measures.o
+C:\Users\rishe\Documents\ICD\obj\principal.o
+C:\Users\rishe\Documents\ICD\obj\randomnumber.o
+C:\Users\rishe\Documents\ICD\obj\heart.o
+C:\Users\rishe\Documents\ICD\obj\network.o
+C:\Users\rishe\Documents\ICD\obj\icd.o
+C:\Users\rishe\Documents\ICD\obj\main.o
+[GENERATED SOURCE FILES]
+b__main.ads
+b__main.adb
+b__main.ali
+[RESULTING OPTIONS]
+-LC:\Users\rishe\Documents\ICD\obj\
+-LC:\Users\rishe\Documents\ICD\obj\
+-LC:/gnat/2017/lib/gcc/i686-pc-mingw32/6.3.1/adalib/
+-static
+-static-libgcc
+C:/gnat/2017/lib/gcc/i686-pc-mingw32/6.3.1/adalib/libgnat.a
+-Wl,--stack=0x2000000
