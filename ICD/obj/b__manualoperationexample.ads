@@ -35,7 +35,7 @@ package ada_main is
    pragma Export (C, main, "main");
 
    type Version_32 is mod 2 ** 32;
-   u00001 : constant Version_32 := 16#2e128814#;
+   u00001 : constant Version_32 := 16#dc33b175#;
    pragma Export (C, u00001, "manualoperationexampleB");
    u00002 : constant Version_32 := 16#b6df930e#;
    pragma Export (C, u00002, "system__standard_libraryB");
@@ -367,34 +367,42 @@ package ada_main is
    pragma Export (C, u00165, "hrmB");
    u00166 : constant Version_32 := 16#33bceb74#;
    pragma Export (C, u00166, "hrmS");
-   u00167 : constant Version_32 := 16#dcfac860#;
-   pragma Export (C, u00167, "impulsegeneratorB");
-   u00168 : constant Version_32 := 16#057156a5#;
-   pragma Export (C, u00168, "impulsegeneratorS");
-   u00169 : constant Version_32 := 16#8b74a921#;
-   pragma Export (C, u00169, "networkB");
-   u00170 : constant Version_32 := 16#ed9a5ee9#;
-   pragma Export (C, u00170, "networkS");
-   u00171 : constant Version_32 := 16#9094876d#;
-   pragma Export (C, u00171, "ada__assertionsB");
-   u00172 : constant Version_32 := 16#1a0b0d2c#;
-   pragma Export (C, u00172, "ada__assertionsS");
-   u00173 : constant Version_32 := 16#52f1910f#;
-   pragma Export (C, u00173, "system__assertionsB");
-   u00174 : constant Version_32 := 16#ff2dadac#;
-   pragma Export (C, u00174, "system__assertionsS");
-   u00175 : constant Version_32 := 16#2bf99b12#;
-   pragma Export (C, u00175, "principalB");
-   u00176 : constant Version_32 := 16#ba98eec4#;
-   pragma Export (C, u00176, "principalS");
-   u00177 : constant Version_32 := 16#18e0e51c#;
-   pragma Export (C, u00177, "system__img_enum_newB");
-   u00178 : constant Version_32 := 16#53ec87f8#;
-   pragma Export (C, u00178, "system__img_enum_newS");
-   u00179 : constant Version_32 := 16#ee101ba4#;
-   pragma Export (C, u00179, "system__memoryB");
-   u00180 : constant Version_32 := 16#6bdde70c#;
-   pragma Export (C, u00180, "system__memoryS");
+   u00167 : constant Version_32 := 16#fd6e63ac#;
+   pragma Export (C, u00167, "icdB");
+   u00168 : constant Version_32 := 16#5bfeb8cc#;
+   pragma Export (C, u00168, "icdS");
+   u00169 : constant Version_32 := 16#18e0e51c#;
+   pragma Export (C, u00169, "system__img_enum_newB");
+   u00170 : constant Version_32 := 16#53ec87f8#;
+   pragma Export (C, u00170, "system__img_enum_newS");
+   u00171 : constant Version_32 := 16#8b74a921#;
+   pragma Export (C, u00171, "networkB");
+   u00172 : constant Version_32 := 16#ed9a5ee9#;
+   pragma Export (C, u00172, "networkS");
+   u00173 : constant Version_32 := 16#9094876d#;
+   pragma Export (C, u00173, "ada__assertionsB");
+   u00174 : constant Version_32 := 16#1a0b0d2c#;
+   pragma Export (C, u00174, "ada__assertionsS");
+   u00175 : constant Version_32 := 16#52f1910f#;
+   pragma Export (C, u00175, "system__assertionsB");
+   u00176 : constant Version_32 := 16#ff2dadac#;
+   pragma Export (C, u00176, "system__assertionsS");
+   u00177 : constant Version_32 := 16#2bf99b12#;
+   pragma Export (C, u00177, "principalB");
+   u00178 : constant Version_32 := 16#ba98eec4#;
+   pragma Export (C, u00178, "principalS");
+   u00179 : constant Version_32 := 16#dcfac860#;
+   pragma Export (C, u00179, "impulsegeneratorB");
+   u00180 : constant Version_32 := 16#057156a5#;
+   pragma Export (C, u00180, "impulsegeneratorS");
+   u00181 : constant Version_32 := 16#7268f812#;
+   pragma Export (C, u00181, "system__img_boolB");
+   u00182 : constant Version_32 := 16#c779f0d3#;
+   pragma Export (C, u00182, "system__img_boolS");
+   u00183 : constant Version_32 := 16#ee101ba4#;
+   pragma Export (C, u00183, "system__memoryB");
+   u00184 : constant Version_32 := 16#6bdde70c#;
+   pragma Export (C, u00184, "system__memoryS");
 
    --  BEGIN ELABORATION ORDER
    --  ada%s
@@ -406,6 +414,8 @@ package ada_main is
    --  system.case_util%b
    --  system.exn_llf%s
    --  system.exn_llf%b
+   --  system.img_bool%s
+   --  system.img_bool%b
    --  system.img_enum_new%s
    --  system.img_enum_new%b
    --  system.img_int%s
@@ -576,6 +586,8 @@ package ada_main is
    --  impulsegenerator%b
    --  network%s
    --  network%b
+   --  icd%s
+   --  icd%b
    --  manualoperationexample%b
    --  END ELABORATION ORDER
 

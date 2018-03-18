@@ -20,7 +20,7 @@ RV NO_DEFAULT_INITIALIZATION
 RV NO_IMPLEMENTATION_PRAGMAS
 RV SPARK_05
 
-U manualoperationexample%b  manualoperationexample.adb  2e128814 NE OO SU
+U manualoperationexample%b  manualoperationexample.adb  dc33b175 NE OO SU
 W ada%s			ada.ads			ada.ali
 W ada.calendar.delays%s	a-caldel.adb		a-caldel.ali
 W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
@@ -28,10 +28,15 @@ W ada.tags%s		a-tags.adb		a-tags.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 W heart%s		heart.adb		heart.ali
 W hrm%s			hrm.adb			hrm.ali
+W icd%s			icd.adb			icd.ali
 W impulsegenerator%s	impulsegenerator.adb	impulsegenerator.ali
+W interfaces%s		interfac.ads		interfac.ali
 W measures%s		measures.adb		measures.ali
 W network%s		network.adb		network.ali
 W principal%s		principal.adb		principal.ali
+W system%s		system.ads		system.ali
+W system.img_bool%s	s-imgboo.adb		s-imgboo.ali
+W system.img_enum_new%s	s-imenne.adb		s-imenne.ali
 
 D ada.ads		20170516105950 76789da1 ada%s
 D a-calend.ads		20170516105954 2d5f01d4 ada.calendar%s
@@ -51,10 +56,11 @@ D a-tiinio.ads		20170516105950 aa04e5d6 ada.text_io.integer_io%s
 D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
 D heart.ads		20180317145212 9fbc8907 heart%s
 D hrm.ads		20180317145212 070f95d8 hrm%s
+D icd.ads		20180318102828 1d463514 icd%s
 D impulsegenerator.ads	20180317145212 31c22809 impulsegenerator%s
 D interfac.ads		20170516105950 5ab55268 interfaces%s
 D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
-D manualoperationexample.adb  20180317145212 2ad92aa9 manualoperationexample%b
+D manualoperationexample.adb  20180318102652 c5be26dc manualoperationexample%b
 D measures.ads		20180317145212 ab0ff7ab measures%s
 D network.ads		20180317145212 720bf374 network%s
 D principal.ads		20180317145212 ba98eec4 principal%s
@@ -64,6 +70,8 @@ D s-crtl.ads		20170516105948 0ebbdb71 system.crtl%s
 D s-exctab.ads		20170516105954 54135002 system.exception_table%s
 D s-ficobl.ads		20170516105956 078245e4 system.file_control_block%s
 D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
+D s-imgboo.ads		20170516105948 f5d971eb system.img_bool%s
+D s-imenne.ads		20170516105950 614c06c0 system.img_enum_new%s
 D s-parame.ads		20170516105954 7e2a0d7f system.parameters%s
 D s-soflin.ads		20170516105950 14e1eb6c system.soft_links%s
 D s-stache.ads		20170516105954 a37c21ec system.stack_checking%s
@@ -73,92 +81,108 @@ D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
 D s-unstyp.ads		20170516105952 34867c83 system.unsigned_types%s
 D s-wchcon.ads		20170516105954 1b7d22d2 system.wch_con%s
 X 1 ada.ads
-16K9*Ada 20e8 22|1r6 1r23 2r6 2r31
+16K9*Ada 20e8 23|1r6 1r23 2r6 2r31
 X 9 a-inteio.ads
-18K13*Integer_Text_IO[15|46] 22|2w10 2r35
+18K13*Integer_Text_IO[15|46] 23|2w10 2r35
 X 11 a-iteint.ads
 24h9 Forward_Iterator
 32h9 Reversible_Iterator<24R9[5|69]>
 X 14 a-textio.ads
-49K13*Text_IO 471e16 22|1w10 1r27
-166U14*New_Line 22|48s31 49s44 50s44 51s47 79s7 109s4 122s7
-242U14*Put 22|48s4 77s7 107s4 120s7
+49K13*Text_IO 471e16 23|1w10 1r27
+166U14*New_Line 23|54s31 55s44 56s44 57s47 69s4 71s4 93s7 130s4 143s7
+242U14*Put 23|54s4 68s4 70s4 91s7 128s4 141s7
 X 15 a-tiinio.ads
-66U14*Put 22|78s7[9|18] 108s4[9|18] 121s7[9|18]
-67i7 Item{integer} 22|78r11[9|18] 108r8[9|18] 121r11[9|18]
+66U14*Put 23|92s7[9|18] 129s4[9|18] 142s7[9|18]
+67i7 Item{integer} 23|92r11[9|18] 129r8[9|18] 142r11[9|18]
 X 17 heart.ads
-7K9*Heart 39e11 22|5w6 15r10 54r4 90r7 103r4 126r7
-10R9*HeartType 18e17 22|15r16
-22U14*Init 22|54s10
-37U14*Tick 22|90s13 103s10 126s13
+7K9*Heart 39e11 23|5w6 16r10 60r4 111r7 124r4 147r7
+10R9*HeartType 18e17 23|16r16
+22U14*Init 23|60s10
+37U14*Tick 23|111s13 124s10 147s13
 X 18 hrm.ads
-7K9*HRM 38e8 22|6w6 16r14 55r4 59r4 76r7 89r7 98r4 100r4 102r4 112r4 118r7
-. 125r7
-10R9*HRMType 16e17 22|16r18
-19U14*Init 22|55s8
-22U14*On 22|59s8 112s8
-25U14*Off 22|98s8
-32U14*GetRate 22|76s11 100s8 118s11
-36U14*Tick 22|89s11 102s8 125s11
-X 19 impulsegenerator.ads
-7K9*ImpulseGenerator 38e21 22|7w6 17r16 56r4 60r4 63r4 88r7 101r4 115r4 124r7
-10R9*GeneratorType 18e17 22|17r33
-21U14*Init 22|56s21
-24U14*On 22|60s21
-33U14*SetImpulse 22|63s21 115s21
-36U14*Tick 22|88s24 101s21 124s24
-X 22 manualoperationexample.adb
-14U11*ManualOperationExample 14b11 139l5 139t27
-15r4 Hrt{17|10R9} 54m15 59r20 88m40 88r40 89r25 90m18 90r18 101m37 101r37
-. 102r22 103m15 103r15 112r20 124m40 124r40 125r25 126m18 126r18
-16r4 Monitor{18|10R9} 55m13 59m11 76r19 89m16 89r16 98m12 98r12 100r16 102m13
-. 102r13 112m11 118r19 125m16 125r16
-17r4 Generator{19|10R9} 56m26 60m24 60r24 63m32 63r32 88r29 101r26 115m32
-. 115r32 124r29
-18i4 HeartRate{23|15I12} 76m28 78r19 83r42 100m25 108r16 118m28 121r19
-19r4 Net{24|9R9} 57m17 70m29 70r29 91m20 91r20 104m17 104r17 127m20 127r20
-. 134r24
-20p4 Card{25|7P9} 41r35 44r26 49r37
-21p4 Clin{25|7P9} 42r35 45r26 50r37
-22p4 Patient{25|7P9} 43r35 46r26 51r37 136r41
-27p4 KnownPrincipals(24|81A9) 44r4 45r4 46r4 57r21
-30b4 MsgAvailable{boolean} 70m33 71r10
-33r4 Msg{24|51R9} 70m46 72r36
-36a4 History{24|42A9} 37r28 82r24 83m10 137r36
-37i4 HistoryPos{integer} 82r10 83r18 84m10 84r24
-38m4 CurrentTime{23|18M9} 83r61 93m7 93r22 105m4 105r19 128m7 128r22
-66i8 I{integer}
-117i8 I{integer}
-X 23 measures.ads
-3K9*Measures 22|4w6 4r20 23|34e13
-15I12*BPM{integer} 22|18r16
-18M9*TickCount 22|38r18
-X 24 network.ads
-6K9*Network 22|8w6 19r10 27r29 27r59 33r10 36r14 57r4 70r7 72r10 91r7 104r4
-. 127r7 134r4 135r40 24|118e12
-9R9*Network 22|19r18 24|116e14
-21n32*ReadRateHistoryResponse{14E9} 22|135r48
-36i7*Rate{23|15I12} 22|83m34
-37m7*Time{23|18M9} 22|83m53
-42A9*RateHistory(35R9)<integer> 22|36r22
-51R9*NetworkMessage 22|33r18 24|78e14
-51e24*MessageType{14E9} 22|135m25
-73p13*HDestination{25|7P9} 22|136m25
-74a13*History{42A9} 22|137m25
-81A9*PrincipalArray(25|7P9)<integer> 22|27r37 27r67
-86U14*Init 22|57s12
-89U14*SendMessage 22|134s12
-94U14*GetNewMessage 22|70s15
-99U14*DebugPrintMessage 22|72s18
-102U14*Tick 22|91s15 104s12 127s15
-X 25 principal.ads
-1K9*Principal 22|9w6 20r11 20r41 21r11 21r41 22r14 22r44 41r4 41r44 42r4
-. 42r44 43r4 43r47 49r4 50r4 51r4 25|32e14
-4n18*Cardiologist{4E9} 22|41r54
-4n32*ClinicalAssistant{4E9} 22|42r54
-4n51*Patient{4E9} 22|43r57
-6R9*Principal 22|20r51 21r51 22r54 25|31e14
-7P9*PrincipalPtr(6R9) 22|20r21 21r21 22r24
-20U14*InitPrincipalForRole 22|41s14 42s14 43s14
-26U14*DebugPrintPrincipalPtr 22|49s14 50s14 51s14
+7K9*HRM 38e8 23|6w6 17r14 61r4 73r4 90r7 110r7 119r4 121r4 123r4 133r4 139r7
+. 146r7
+10R9*HRMType 16e17 23|17r18
+19U14*Init 23|61s8
+22U14*On 23|73s8 133s8
+25U14*Off 23|119s8
+32U14*GetRate 23|90s11 121s8 139s11
+36U14*Tick 23|110s11 123s8 146s11
+X 19 icd.ads
+7K9*ICD 51e8 23|10w6 26r10 27r9 66r4 67r4 96r7
+15A6*HeartRateHistory(25|35R9)<integer> 23|27r13
+17R6*ICDType 22e15 23|26r14
+20e8*HealthType{12E6} 23|68r13
+21b8*IsOn{boolean} 23|70r27
+37U14*Init 23|66s8
+40U14*On 23|67s8
+50U14*Tick 23|96s11
+50r19 Icd{17R6} 23|96r16
+50a39 Hrh{15A6} 23|97r16
+50i68 HeartRate{24|15I12} 23|98r16
+50m86 CurrentTime{24|18M9} 23|99r16
+X 20 impulsegenerator.ads
+7K9*ImpulseGenerator 38e21 23|7w6 18r16 62r4 74r4 77r4 109r7 122r4 136r4
+. 145r7
+10R9*GeneratorType 18e17 23|18r33
+21U14*Init 23|62s21
+24U14*On 23|74s21
+33U14*SetImpulse 23|77s21 136s21
+36U14*Tick 23|109s24 122s21 145s24
+X 23 manualoperationexample.adb
+15U11*ManualOperationExample 15b11 160l5 160t27
+16r4 Hrt{17|10R9} 60m15 73r20 109m40 109r40 110r25 111m18 111r18 122m37 122r37
+. 123r22 124m15 124r15 133r20 145m40 145r40 146r25 147m18 147r18
+17r4 Monitor{18|10R9} 61m13 73m11 90r19 110m16 110r16 119m12 119r12 121r16
+. 123m13 123r13 133m11 139r19 146m16 146r16
+18r4 Generator{20|10R9} 62m26 74m24 74r24 77m32 77r32 109r29 122r26 136m32
+. 136r32 145r29
+19i4 HeartRate{24|15I12} 90m28 92r19 98r31 104r42 121m25 129r16 139m28 142r19
+20r4 Net{25|9R9} 63m17 84m29 84r29 112m20 112r20 125m17 125r17 148m20 148r20
+. 155r24
+21p4 Card{26|7P9} 47r35 50r26 55r37
+22p4 Clin{26|7P9} 48r35 51r26 56r37
+23p4 Patient{26|7P9} 49r35 52r26 57r37 157r41
+26r4 Icdt{19|17R6} 66m17 67m11 68r8 70r22 96m31 96r31
+27a4 Hrh{19|15A6} 66m13 66r13 97m31 97r31
+33p4 KnownPrincipals(25|81A9) 50r4 51r4 52r4 63r21
+36b4 MsgAvailable{boolean} 84m33 85r10
+39r4 Msg{25|51R9} 84m46 86r36
+42a4 History{25|42A9} 43r28 103r24 104m10 158r36
+43i4 HistoryPos{integer} 103r10 104r18 105m10 105r24
+44m4 CurrentTime{24|18M9} 99r30 104r61 114m7 114r22 126m4 126r19 149m7 149r22
+80i8 I{integer}
+138i8 I{integer}
+X 24 measures.ads
+3K9*Measures 23|4w6 4r20 24|34e13
+15I12*BPM{integer} 23|19r16
+18M9*TickCount 23|44r18
+X 25 network.ads
+6K9*Network 23|8w6 20r10 33r29 33r59 39r10 42r14 63r4 84r7 86r10 112r7 125r4
+. 148r7 155r4 156r40 25|118e12
+9R9*Network 23|20r18 25|116e14
+21n32*ReadRateHistoryResponse{14E9} 23|156r48
+36i7*Rate{24|15I12} 23|104m34
+37m7*Time{24|18M9} 23|104m53
+42A9*RateHistory(35R9)<integer> 23|42r22
+51R9*NetworkMessage 23|39r18 25|78e14
+51e24*MessageType{14E9} 23|156m25
+73p13*HDestination{26|7P9} 23|157m25
+74a13*History{42A9} 23|158m25
+81A9*PrincipalArray(26|7P9)<integer> 23|33r37 33r67
+86U14*Init 23|63s12
+89U14*SendMessage 23|155s12
+94U14*GetNewMessage 23|84s15
+99U14*DebugPrintMessage 23|86s18
+102U14*Tick 23|112s15 125s12 148s15
+X 26 principal.ads
+1K9*Principal 23|9w6 21r11 21r41 22r11 22r41 23r14 23r44 47r4 47r44 48r4
+. 48r44 49r4 49r47 55r4 56r4 57r4 26|32e14
+4n18*Cardiologist{4E9} 23|47r54
+4n32*ClinicalAssistant{4E9} 23|48r54
+4n51*Patient{4E9} 23|49r57
+6R9*Principal 23|21r51 22r51 23r54 26|31e14
+7P9*PrincipalPtr(6R9) 23|21r21 22r21 23r24
+20U14*InitPrincipalForRole 23|47s14 48s14 49s14
+26U14*DebugPrintPrincipalPtr 23|55s14 56s14 57s14
 

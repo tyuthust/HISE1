@@ -7,6 +7,7 @@ with HRM;
 with ImpulseGenerator;
 with Network;
 with Principal;
+with ICD;
 
 -- This procedure demonstrates a simple composition of the network,
 -- heart rate  monitor (HRM), heart, and impulse generator, with three
@@ -20,6 +21,11 @@ procedure ManualOperationExample is
    Card : Principal.PrincipalPtr := new Principal.Principal;  -- A cardiologist
    Clin : Principal.PrincipalPtr := new Principal.Principal;  -- A clinical assistant
    Patient : Principal.PrincipalPtr := new Principal.Principal; -- A patient
+   
+   -- Test for ICD
+   Icdt: ICD.ICDType;
+   Hrh: ICD.HeartRateHistory;
+ 
    
    -- an array of known principals to use to initialise the network
    -- but note that the network can generate messages from other, unknown,
@@ -56,6 +62,14 @@ begin
    ImpulseGenerator.Init(Generator);
    Network.Init(Net,KnownPrincipals);
    
+   -- Test for ICD
+   ICD.Init(Hrh,Icdt);
+   ICD.On(Icdt);
+   Put(Icdt.HealthType'Image);
+   New_Line;
+   Put(Boolean'Image(Icdt.IsOn));
+   New_Line;
+   
    HRM.On(Monitor, Hrt);
    ImpulseGenerator.On(Generator);
    
@@ -77,6 +91,13 @@ begin
       Put("Measured heart rate  = ");
       Put(Item => HeartRate);
       New_Line;
+      
+      -- ICD test
+      ICD.Tick(Icd         => Icdt,
+               Hrh         => Hrh,
+               HeartRate   => HeartRate,
+               CurrentTime =>CurrentTime );
+      
       
       -- record the initial history only
       if HistoryPos <= History'Last then

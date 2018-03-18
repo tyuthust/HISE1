@@ -248,15 +248,15 @@ package body ada_main is
    end;
 
 --  BEGIN Object file/option list
-   --   C:\Users\rishe\Documents\ICD\obj\measures.o
-   --   C:\Users\rishe\Documents\ICD\obj\principal.o
-   --   C:\Users\rishe\Documents\ICD\obj\randomnumber.o
-   --   C:\Users\rishe\Documents\ICD\obj\heart.o
-   --   C:\Users\rishe\Documents\ICD\obj\network.o
-   --   C:\Users\rishe\Documents\ICD\obj\icd.o
-   --   C:\Users\rishe\Documents\ICD\obj\main.o
-   --   -LC:\Users\rishe\Documents\ICD\obj\
-   --   -LC:\Users\rishe\Documents\ICD\obj\
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\measures.o
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\principal.o
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\randomnumber.o
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\heart.o
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\network.o
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\icd.o
+   --   C:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\main.o
+   --   -LC:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\
+   --   -LC:\Users\rishe\Documents\swen90010\HISE1\ICD\obj\
    --   -LC:/gnat/2017/lib/gcc/i686-pc-mingw32/6.3.1/adalib/
    --   -static
    --   -lgnat

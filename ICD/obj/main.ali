@@ -10,13 +10,16 @@ RV NO_IO
 RV NO_IMPLEMENTATION_PRAGMAS
 RV SPARK_05
 
-U main%b		main.adb		e68f3a05 NE OO SU
+U main%b		main.adb		2e11f6b8 NE OO SU
 W ada%s			ada.ads			ada.ali
 W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 W icd%s			icd.adb			icd.ali
+W interfaces%s		interfac.ads		interfac.ali
 W measures%s		measures.adb		measures.ali
+W system%s		system.ads		system.ali
 W system.img_bool%s	s-imgboo.adb		s-imgboo.ali
+W system.img_enum_new%s	s-imenne.adb		s-imenne.ali
 
 D ada.ads		20170516105950 76789da1 ada%s
 D a-contai.ads		20170516105950 61e5e089 ada.containers%s
@@ -33,10 +36,10 @@ D a-textio.ads		20170516105954 386df5d4 ada.text_io%s
 D a-tiinio.ads		20170516105950 aa04e5d6 ada.text_io.integer_io%s
 D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
 D heart.ads		20180317145212 9fbc8907 heart%s
-D icd.ads		20180318055156 c67f353a icd%s
+D icd.ads		20180318083754 59ad1e2c icd%s
 D interfac.ads		20170516105950 5ab55268 interfaces%s
 D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
-D main.adb		20180318061950 45d984e4 main%b
+D main.adb		20180318084600 1295634f main%b
 D measures.ads		20180317145212 ab0ff7ab measures%s
 D network.ads		20180317145212 720bf374 network%s
 D principal.ads		20180317145212 ba98eec4 principal%s
@@ -47,6 +50,7 @@ D s-exctab.ads		20170516105954 54135002 system.exception_table%s
 D s-ficobl.ads		20170516105956 078245e4 system.file_control_block%s
 D s-finroo.ads		20170516105954 4ff27390 system.finalization_root%s
 D s-imgboo.ads		20170516105948 f5d971eb system.img_bool%s
+D s-imenne.ads		20170516105950 614c06c0 system.img_enum_new%s
 D s-parame.ads		20170516105954 7e2a0d7f system.parameters%s
 D s-soflin.ads		20170516105950 14e1eb6c system.soft_links%s
 D s-stache.ads		20170516105954 a37c21ec system.stack_checking%s
@@ -64,25 +68,26 @@ X 9 a-iteint.ads
 32h9 Reversible_Iterator<24R9[3|69]>
 X 12 a-textio.ads
 49K13*Text_IO 471e16 19|1w10 1r27
-166U14*New_Line 19|44s4
-242U14*Put 19|43s4 45s4
+166U14*New_Line 19|21s4 23s4 26s4 28s4 31s4
+242U14*Put 19|20s4 22s4 25s4 27s4 30s4 32s4
 X 16 icd.ads
-7K9*ICD 29e8 19|6w6 6r15
-13A6*HeartRateHistory(21|35R9)<integer> 19|10r9
-21V10*isVentricleFibrillation{boolean} 19|42s12
-25U11*updateHeartRateHistory 19|21s4 24s4 27s7 30s7 33s7 36s7 39s7
-25a34 Hrh{13A6} 19|21r27 24r27 27r30 30r30 33r30 36r30 39r30
-25i63 HeartRate{20|15I12} 19|22r27 25r27 28r27 31r27 34r27 37r27 40r27
-25m81 CurrentTime{20|18M9} 19|23r27 26r27 29r30 32r30 35r30 38r30 41r30
-28U11*initHRH 19|20s4
+7K9*ICD 52e8 19|4w6 4r15
+15A6*HeartRateHistory(21|35R9)<integer> 19|8r9
+17R6*ICDType 22e15 19|9r9
+20e8*HealthType{12E6} 19|20r12 25r12 30r12
+21b8*IsOn{boolean} 19|22r26 27r26 32r26
+37U14*Init 19|18s4
+37a19 Hrh{15A6} 19|18r9
+37r48 Icd{17R6} 19|19r9
+40U14*On 19|24s4
+43U14*Off 19|29s4
 X 19 main.adb
-8U11*Main 8b11 46l5 46t9
-10a4 Hrh{16|13A6} 20m12 20r12 21m42 21r42 24m42 24r42 27m45 27r45 30m45 30r45
-. 33m45 33r45 36m45 36r45 39m45 39r45 42r36
-13i4 HeartRate{20|15I12}
-14b4 Output{boolean} 42m4 45r22
+6U11*Main 6b11 58l5 58t9
+8a4 Hrh{16|15A6} 18m24 18r24
+9r4 Icd{16|17R6} 19m16 20r8 22r22 24m7 25r8 27r22 29m8 30r8 32r22
+11i4 HeartRate{20|15I12}
+12b4 Output{boolean}
 X 20 measures.ads
 3K9*Measures 19|3w6 3r19 20|34e13
-15I12*BPM{integer} 19|13r14
-18M9*TickCount
+15I12*BPM{integer} 19|11r14
 
