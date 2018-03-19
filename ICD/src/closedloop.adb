@@ -14,7 +14,7 @@ package body ClosedLoop is
    Monitor : HRM.HRMType;                -- The simulated heart rate monitor
    Generator : ImpulseGenerator.GeneratorType; -- The simulated generator
    HeartRate : BPM;
-   IcdUnit : ICD.PatientHeartHealthType;
+   IcdUnit : ICD.ICDType;
    Net : Network.Network;                -- The simulated network
    Card : Principal.PrincipalPtr := new Principal.Principal;  -- A cardiologist
    Clin : Principal.PrincipalPtr := new Principal.Principal;  -- A clinical assistant
@@ -35,6 +35,8 @@ package body ClosedLoop is
    History : Network.RateHistory;
    HistoryPos : Integer := History'First;
    CurrentTime : TickCount := 0;  -- current time as measured in ticks
+   
+   ICDHistory : ICD.HeartRateHistory;
    
    
   
@@ -69,7 +71,7 @@ package body ClosedLoop is
       HRM.Init(Monitor);
       ImpulseGenerator.Init(Generator);
       Network.Init(Net,KnownPrincipals);
-      --IcdUnit.initHRH(History);
+      ICD.Init(Hrh => ICDHistory,Icd => IcdUnit);
       HRM.On(Monitor, Hrt);
       ImpulseGenerator.On(Generator);
       
