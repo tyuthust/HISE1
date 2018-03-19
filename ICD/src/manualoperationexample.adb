@@ -25,7 +25,10 @@ procedure ManualOperationExample is
    -- Test for ICD
    Icdt: ICD.ICDType;
    Hrh: ICD.HeartRateHistory;
- 
+   Impulsecounter: Integer range 0..10:=0;
+   -- Treatment active flag
+   TreatmentActiveFlag: Boolean:=False;
+      
    
    -- an array of known principals to use to initialise the network
    -- but note that the network can generate messages from other, unknown,
@@ -92,27 +95,50 @@ begin
       Put(Item => HeartRate);
       New_Line;
       
+
+      
       -- ICD test
       ICD.Tick(Icd         => Icdt,
                Hrh         => Hrh,
                HeartRate   => HeartRate,
-               CurrentTime =>CurrentTime );
+               CurrentTime => CurrentTime,
+               Generator   => Generator,
+               Hrt         => Hrt,
+               ImpulseGeneratorcounter=>Impulsecounter,
+               ActiveFlag=>TreatmentActiveFlag);
       
       
+      PUT("Health condition: ");
+      PUT(Icdt.HealthType'Image);
+      New_Line;
+      
+       
       -- record the initial history only
       if HistoryPos <= History'Last then
          History(HistoryPos) := (Rate => HeartRate, Time => CurrentTime);
          HistoryPos := HistoryPos + 1;
       end if;
       
+
+      
       -- Tick all components to simulate the passage of one decisecond
+      if Impulsecounter>0 and TreatmentActiveFlag=True  then
+         Impulsecounter:=Impulsecounter-1;
+      else
+         TreatmentActiveFlag:=False;
+         ImpulseGenerator.SetImpulse(Generator,J => 0);
+      end if;
+      
       ImpulseGenerator.Tick(Generator, Hrt);
+      
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);
       
       CurrentTime := CurrentTime + 1;
       delay 0.1;
+      PUT("********************");
+      New_Line;
    end loop;
    
    -- Turn off the monitor: should return -1.0 for the next readings
@@ -143,6 +169,10 @@ begin
       New_Line;     
       
       ImpulseGenerator.Tick(Generator, Hrt);
+      PUT("Heart Rate");
+      New_Line;
+      PUT(Hrt.Rate);
+      New_Line;
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);

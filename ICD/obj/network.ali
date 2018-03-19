@@ -61,7 +61,7 @@ D a-tiinio.ads		20170516105950 aa04e5d6 ada.text_io.integer_io%s
 D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
 D interfac.ads		20170516105950 5ab55268 interfaces%s
 D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
-D measures.ads		20180317145212 ab0ff7ab measures%s
+D measures.ads		20180319111220 ab0ff7ab measures%s
 D network.ads		20180317145212 720bf374 network%s
 D network.adb		20180317145212 7ff82da3 network%b
 D principal.ads		20180317145212 ba98eec4 principal%s

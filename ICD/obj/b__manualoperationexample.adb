@@ -38,7 +38,7 @@ package body ada_main is
    E148 : Short_Integer; pragma Import (Ada, E148, "randomnumber_E");
    E144 : Short_Integer; pragma Import (Ada, E144, "heart_E");
    E166 : Short_Integer; pragma Import (Ada, E166, "hrm_E");
-   E180 : Short_Integer; pragma Import (Ada, E180, "impulsegenerator_E");
+   E170 : Short_Integer; pragma Import (Ada, E170, "impulsegenerator_E");
    E172 : Short_Integer; pragma Import (Ada, E172, "network_E");
    E168 : Short_Integer; pragma Import (Ada, E168, "icd_E");
 
@@ -216,7 +216,7 @@ package body ada_main is
       E148 := E148 + 1;
       E144 := E144 + 1;
       E166 := E166 + 1;
-      E180 := E180 + 1;
+      E170 := E170 + 1;
       Network'Elab_Body;
       E172 := E172 + 1;
       E168 := E168 + 1;

@@ -15,19 +15,19 @@ RV NO_IMPLEMENTATION_PRAGMAS
 RV NO_OBSOLESCENT_FEATURES
 RV SPARK_05
 
-U ada_main%b		b__manualoperationexample.adb  fe2c8e3e NE OO PK IL
+U ada_main%b		b__manualoperationexample.adb  7be681c0 NE OO PK IL
 W ada%s			ada.ads			ada.ali
 W ada.exceptions%s	a-except.adb		a-except.ali
 W system%s		system.ads		system.ali
 
-U ada_main%s		b__manualoperationexample.ads  67bd24cf EE NE OO PK IL
+U ada_main%s		b__manualoperationexample.ads  f02effe3 EE NE OO PK IL
 W system%s		system.ads		system.ali
 
 D ada.ads		20170516105950 76789da1 ada%s
 D a-except.ads		20170516105952 291912d5 ada.exceptions%s
 D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
-D b__manualoperationexample.ads  20180318103318 551da5f7 ada_main%s
-D b__manualoperationexample.adb  20180318103318 8228391c ada_main%b
+D b__manualoperationexample.ads  20180319134348 c28e7edb ada_main%s
+D b__manualoperationexample.adb  20180319134348 9071edce ada_main%b
 D system.ads		20170516105954 32a08138 system%s
 D s-parame.ads		20170516105954 7e2a0d7f system.parameters%s
 D s-stalib.ads		20170516105954 09bd3940 system.standard_library%s
@@ -283,7 +283,7 @@ X 5 b__manualoperationexample.adb
 38i4 E148{short_integer} 38m46 38r46 216m7 216r15
 39i4 E144{short_integer} 39m46 39r46 217m7 217r15
 40i4 E166{short_integer} 40m46 40r46 218m7 218r15
-41i4 E180{short_integer} 41m46 41r46 219m7 219r15
+41i4 E170{short_integer} 41m46 41r46 219m7 219r15
 42i4 E172{short_integer} 42m46 42r46 221m7 221r15
 43i4 E168{short_integer} 43m46 43r46 222m7 222r15
 45a4 Local_Priority_Specific_Dispatching{string} 143r9

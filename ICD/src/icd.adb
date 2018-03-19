@@ -3,18 +3,17 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Measures;
 with Heart; use Heart;
 with Network;
+with ImpulseGenerator;
 
 package body ICD is
    -- The initial upper bound for tachycardia when the system starts
    TachyBound: Integer:=100;
+
    -- The initial number of joules to deliver in the case of a ventricle fibrillation
    JoulesToDeliver: Measures.Joules:=30;
 
-
+   -- The constant of how much the given impulse rate should be greater than the current heart rate
    AboveHeartRate: Constant Measures.BPM:=15;
-   TachycardiaDeliverTimes: Constant Integer:=2;
-
-
 
    function isTachycardia(HeartRate: in BPM) return Boolean is
       Output: Boolean:=False;
@@ -57,27 +56,27 @@ package body ICD is
       return Output;
       end isVentricleFibrillation;
 
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: out ICDType) return Boolean is
+   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
       else
          TachyBound:=TachyB;
          return True;
-      end if
+      end if;
    end changeTachycardiaUpperBoundSet;
 
-   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: out ICDType) return Boolean is
+   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
       else
          JoulesToDeliver:=JoulesToD;
          return True;
-      end if
+      end if;
    end changeJoulesDeliverNumForVentricle_fibrillation;
 
-   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: out ICDType) return Boolean is
+   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
@@ -85,7 +84,7 @@ package body ICD is
          TachyB:=TachyBound;
          JoulesToD:=JoulesToDeliver;
          return True;
-      end if
+      end if;
    end readSet;
 
 
@@ -129,24 +128,58 @@ package body ICD is
       return Icd.IsOn;
    end IsOn;
 
-   procedure Tick(Icd: in out ICDType;Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount) is
+   procedure activeWhenTachycardia(ImpulseGeneratorcounter: out Integer;Generator:in out ImpulseGenerator.GeneratorType; Hrt : in out Heart.HeartType) is
+      HeartRate: Measures.BPM;
+      TachyJoules: Measures.Joules:=2;
+   begin
+      -- Set the Joules of the impulse deliver to haert when Tachycardia
+      ImpulseGenerator.SetImpulse(Generator,TachyJoules);
+      -- Set the
+      ImpulseGeneratorcounter:=10;
+      Heart.GetRate(Heart => Hrt,
+                    Rate  => HeartRate);
+      HeartRate:=HeartRate+AboveHeartRate;
+      Hrt.Rate:=HeartRate;
+   end activeWhenTachycardia;
+
+
+   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;Generator:in out ImpulseGenerator.GeneratorType) is
+   begin
+      ImpulseGeneratorcounter:=1;
+      ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
+   end activeWhenVentricle_fibrillation;
+
+
+   procedure Tick(Icd: in out ICDType;Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount;Generator:in out ImpulseGenerator.GeneratorType;Hrt : in out Heart.HeartType;ImpulseGeneratorcounter: in out Integer;ActiveFlag: in out Boolean) is
    begin
       if Icd.IsOn then
-        updateHeartRateHistory(Hrh         => Hrh,
+         updateHeartRateHistory(Hrh         => Hrh,
                           HeartRate   => HeartRate,
                                CurrentTime => CurrentTime);
          if isTachycardia(HeartRate => HeartRate) then
+            New_Line;
             Icd.HealthType:=Tachycardia;
+            if ActiveFlag=False then
+               activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
+                                     Generator               => Generator ,
+                                     Hrt                     => Hrt);
+               ActiveFlag:=True;
+            end if;
          elsif isVentricleFibrillation(Hrh => Hrh) then
             if CurrentTime>6 then
-               Icd.HealthType:=Ventricle_fibrillation;
+               if ActiveFlag=False then
+                  Icd.HealthType:=Ventricle_fibrillation;
+                  activeWhenVentricle_fibrillation(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
+                                                   Generator               => Generator);
+                  ActiveFlag:=True;
+               end if;
             end if;
          else
             Icd.HealthType:=Healthy;
          end if;
       end if;
-      Put(Icd.HealthType'Image);
-      New_Line;
+--        Put(Icd.HealthType'Image);
+--        New_Line;
    end Tick;
 
 

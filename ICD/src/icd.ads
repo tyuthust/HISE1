@@ -1,6 +1,7 @@
 with Network;
 with Heart; use Heart;
 with Measures; use Measures;
+with ImpulseGenerator;
 
 -- This package provides some basic functinality to provide 
 -- the necessary calculations of the impulse to be delivered based on the measured heart rate
@@ -30,13 +31,13 @@ type ICDType is
                                     return boolean;
    
    -- Set the TachyBound field
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: out ICDType) return Boolean;
+   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: in ICDType) return Boolean;
    
    -- Set the number of joules to deliver filed
-   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: out ICDType) return Boolean;
+   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: in ICDType) return Boolean;
    
    -- Read the TachyBound field and joules to deliver filed
-   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: out ICDType) return Boolean;
+   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean;
    
    -- Update the heart rate history
    procedure updateHeartRateHistory(Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount);
@@ -54,6 +55,13 @@ type ICDType is
    function IsOn(Icd : in ICDType) return Boolean;
    --# return B.IsOn;
    
+   -- The ICD will perform and call methods in impulse generator when Tachycardia happens
+   procedure activeWhenTachycardia(ImpulseGeneratorcounter: out Integer;Generator:in out ImpulseGenerator.GeneratorType; Hrt : in out Heart.HeartType);
+   
+    -- The ICD will perform and call methods in impulse generator when Ventricle fibrillation happens
+   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;Generator: in out ImpulseGenerator.GeneratorType);
+   
    -- Tick the clock and Check the health type of the patient, call by closedLoop
-   procedure Tick(Icd: in out ICDType;Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount);
+   -- Activeflag param records whether the ICD is calling the impulsegenerator 
+   procedure Tick(Icd: in out ICDType;Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount;Generator:in out ImpulseGenerator.GeneratorType;Hrt : in out Heart.HeartType;ImpulseGeneratorcounter: in out Integer;ActiveFlag: in out Boolean);
 end ICD;

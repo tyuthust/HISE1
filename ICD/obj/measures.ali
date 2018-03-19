@@ -11,7 +11,7 @@ U measures%b		measures.adb		17bda97a NE OO PK
 
 U measures%s		measures.ads		ab0ff7ab EE NE OO PK
 
-D measures.ads		20180317145212 ab0ff7ab measures%s
+D measures.ads		20180319111220 ab0ff7ab measures%s
 D measures.adb		20180317145212 bcb25ed1 measures%b
 D system.ads		20170516105954 32a08138 system%s
 X 1 measures.ads

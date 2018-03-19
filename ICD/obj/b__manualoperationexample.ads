@@ -35,7 +35,7 @@ package ada_main is
    pragma Export (C, main, "main");
 
    type Version_32 is mod 2 ** 32;
-   u00001 : constant Version_32 := 16#dc33b175#;
+   u00001 : constant Version_32 := 16#5b71c59c#;
    pragma Export (C, u00001, "manualoperationexampleB");
    u00002 : constant Version_32 := 16#b6df930e#;
    pragma Export (C, u00002, "system__standard_libraryB");
@@ -367,14 +367,14 @@ package ada_main is
    pragma Export (C, u00165, "hrmB");
    u00166 : constant Version_32 := 16#33bceb74#;
    pragma Export (C, u00166, "hrmS");
-   u00167 : constant Version_32 := 16#fd6e63ac#;
+   u00167 : constant Version_32 := 16#65159e11#;
    pragma Export (C, u00167, "icdB");
-   u00168 : constant Version_32 := 16#5bfeb8cc#;
+   u00168 : constant Version_32 := 16#18423bfc#;
    pragma Export (C, u00168, "icdS");
-   u00169 : constant Version_32 := 16#18e0e51c#;
-   pragma Export (C, u00169, "system__img_enum_newB");
-   u00170 : constant Version_32 := 16#53ec87f8#;
-   pragma Export (C, u00170, "system__img_enum_newS");
+   u00169 : constant Version_32 := 16#dcfac860#;
+   pragma Export (C, u00169, "impulsegeneratorB");
+   u00170 : constant Version_32 := 16#057156a5#;
+   pragma Export (C, u00170, "impulsegeneratorS");
    u00171 : constant Version_32 := 16#8b74a921#;
    pragma Export (C, u00171, "networkB");
    u00172 : constant Version_32 := 16#ed9a5ee9#;
@@ -391,10 +391,10 @@ package ada_main is
    pragma Export (C, u00177, "principalB");
    u00178 : constant Version_32 := 16#ba98eec4#;
    pragma Export (C, u00178, "principalS");
-   u00179 : constant Version_32 := 16#dcfac860#;
-   pragma Export (C, u00179, "impulsegeneratorB");
-   u00180 : constant Version_32 := 16#057156a5#;
-   pragma Export (C, u00180, "impulsegeneratorS");
+   u00179 : constant Version_32 := 16#18e0e51c#;
+   pragma Export (C, u00179, "system__img_enum_newB");
+   u00180 : constant Version_32 := 16#53ec87f8#;
+   pragma Export (C, u00180, "system__img_enum_newS");
    u00181 : constant Version_32 := 16#7268f812#;
    pragma Export (C, u00181, "system__img_boolB");
    u00182 : constant Version_32 := 16#c779f0d3#;
