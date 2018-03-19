@@ -6,13 +6,15 @@ with Network;
 with Principal;
 with ICD;
 
-package ClosedLoop is
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
+package body ClosedLoop is
    
    Hrt : Heart.HeartType;                -- The simulated heart
    Monitor : HRM.HRMType;                -- The simulated heart rate monitor
    Generator : ImpulseGenerator.GeneratorType; -- The simulated generator
    HeartRate : BPM;
-   Icd : ICD;
+   IcdUnit : ICD.PatientHeartHealthType;
    Net : Network.Network;                -- The simulated network
    Card : Principal.PrincipalPtr := new Principal.Principal;  -- A cardiologist
    Clin : Principal.PrincipalPtr := new Principal.Principal;  -- A clinical assistant
@@ -67,7 +69,7 @@ package ClosedLoop is
       HRM.Init(Monitor);
       ImpulseGenerator.Init(Generator);
       Network.Init(Net,KnownPrincipals);
-      Icd.initHRH(History);
+      --IcdUnit.initHRH(History);
       HRM.On(Monitor, Hrt);
       ImpulseGenerator.On(Generator);
       
@@ -88,6 +90,33 @@ package ClosedLoop is
       Network.GetNewMessage(Net,MsgAvailable,Msg);
       if MsgAvailable then
          -- TODO feature based on the MSG
+         case Msg.MessageType is
+            when Network.ModeOn =>
+            Put("ModeOn (MOnSource: ");
+            Principal.DebugPrintPrincipalPtr(Msg.MOnSource);
+            Put(")"); New_Line;
+            when Network.ModeOff =>
+            Put("ModeOff (MOffSource: ");
+            Principal.DebugPrintPrincipalPtr(Msg.MOffSource);
+            Put(")"); New_Line;
+         when Network.ReadRateHistoryRequest =>
+            Put("ReadRateHistoryRequest (HSource: ");
+            Principal.DebugPrintPrincipalPtr(Msg.HSource);
+            Put(")"); New_Line;
+         when Network.ReadRateHistoryResponse =>
+           Put("ReadRateHistoryRequest (HDestination: ");
+           Principal.DebugPrintPrincipalPtr(Msg.HDestination);
+           Put("; History: "); 
+           for Index in Msg.History'Range loop
+              Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Rate));
+              Put(" @ "); Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Time));
+              Put(", ");
+           end loop;
+           Put(")"); New_Line;
+         when others =>
+            -- you should implement these for your own debugging if you wish
+            null;
+      end case;
          Network.DebugPrintMessage(Msg);
       end if;
       
