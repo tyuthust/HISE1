@@ -30,13 +30,13 @@ type ICDType is
                                     return boolean;
    
    -- Set the TachyBound field
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: out ICDType) return Boolean;
+   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: in ICDType) return Boolean;
    
    -- Set the number of joules to deliver filed
-   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: out ICDType) return Boolean;
+   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: in ICDType) return Boolean;
    
    -- Read the TachyBound field and joules to deliver filed
-   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: out ICDType) return Boolean;
+   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean;
    
    -- Update the heart rate history
    procedure updateHeartRateHistory(Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount);

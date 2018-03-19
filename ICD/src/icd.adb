@@ -57,27 +57,27 @@ package body ICD is
       return Output;
       end isVentricleFibrillation;
 
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: out ICDType) return Boolean is
+   function changeTachycardiaUpperBoundSet(TachyB: in Integer; Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
       else
          TachyBound:=TachyB;
          return True;
-      end if
+      end if;
    end changeTachycardiaUpperBoundSet;
 
-   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: out ICDType) return Boolean is
+   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
       else
          JoulesToDeliver:=JoulesToD;
          return True;
-      end if
+      end if;
    end changeJoulesDeliverNumForVentricle_fibrillation;
 
-   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: out ICDType) return Boolean is
+   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
@@ -85,7 +85,7 @@ package body ICD is
          TachyB:=TachyBound;
          JoulesToD:=JoulesToDeliver;
          return True;
-      end if
+      end if;
    end readSet;
 
 
