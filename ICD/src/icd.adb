@@ -56,7 +56,8 @@ package body ICD is
       return Output;
       end isVentricleFibrillation;
 
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: in ICDType) return Boolean is
+
+   function changeTachycardiaUpperBoundSet(TachyB: in Integer; Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
