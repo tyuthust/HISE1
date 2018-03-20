@@ -36,10 +36,31 @@ package body ClosedLoop is
    HistoryPos : Integer := History'First;
    CurrentTime : TickCount := 0;  -- current time as measured in ticks
    
+   --Para using by ICD
    ICDHistory : ICD.HeartRateHistory;
+   Impulsecounter: Integer range 0..10:=0;
+   -- Treatment active flag
+   TreatmentActiveFlag: Boolean:=False;
    
-   
-  
+   -- check whether the candidate Principal is a known one
+   function CheckIsKnownPrincipal(
+                                  CandidatePrincipalPtr : in Principal.PrincipalPtr;
+                                  KnownPrincipalArray : in Network.PrincipalArray) 
+                                  return Boolean is
+      IsKnown : Boolean := False;
+   begin
+      for i in Integer range KnownPrincipalArray'Range loop
+         if (Principal.PrincipalPtrToString(CandidatePrincipalPtr) = Principal.PrincipalPtrToString(KnownPrincipalArray(i))) then
+            IsKnown := True;
+         end if;
+      end loop;
+      if (IsKnown) then
+         Put_Line("This is Known Pricipal");
+      else
+         Put_Line("This is NOT Known Pricipal");
+         end if;
+         return IsKnown;
+   end CheckIsKnownPrincipal;
   
   -- This procedure should create three Principals: one Patient, one 
   -- Cardiologist and one Clinical Assistant. These are the authorised 
@@ -71,7 +92,11 @@ package body ClosedLoop is
       HRM.Init(Monitor);
       ImpulseGenerator.Init(Generator);
       Network.Init(Net,KnownPrincipals);
+
       ICD.Init(Hrh => ICDHistory,Icd => IcdUnit);
+      ICD.On(Icd => IcdUnit);
+      
+      
       HRM.On(Monitor, Hrt);
       ImpulseGenerator.On(Generator);
       
@@ -85,48 +110,128 @@ package body ClosedLoop is
   -- from authorised principals (e.g. by calling procedures of the ICD 
   -- package that you will write)
    procedure Tick is
-      
+      -- Ready for response towards the request if applicable
+      MsgJoules : Measures.Joules;
+      MsgBPM : Measures.BPM;
+      sendMSg : Network.NetworkMessage;
    begin
       -- read messages from the network but don't act on them here,
       -- just print them out
       Network.GetNewMessage(Net,MsgAvailable,Msg);
-      if MsgAvailable then
-         -- TODO feature based on the MSG
+      if (MsgAvailable) then
+
+         
+         
+         -- feature based on the MSG
          case Msg.MessageType is
             when Network.ModeOn =>
-            Put("ModeOn (MOnSource: ");
-            Principal.DebugPrintPrincipalPtr(Msg.MOnSource);
-            Put(")"); New_Line;
+               -- check if principal is known
+               if(
+                  CheckIsKnownPrincipal(
+                                        CandidatePrincipalPtr=>Msg.MOnSource,
+                                        KnownPrincipalArray => KnownPrincipals.all)
+                 ) then
+              
+                  Put("ModeOn (MOnSource: ");
+                  Principal.DebugPrintPrincipalPtr(Msg.MOnSource);
+                  Put(")"); New_Line;
+                  ICD.On(Icd => IcdUnit);
+               end if;
+               
             when Network.ModeOff =>
-            Put("ModeOff (MOffSource: ");
-            Principal.DebugPrintPrincipalPtr(Msg.MOffSource);
-            Put(")"); New_Line;
-         when Network.ReadRateHistoryRequest =>
-            Put("ReadRateHistoryRequest (HSource: ");
-            Principal.DebugPrintPrincipalPtr(Msg.HSource);
-            Put(")"); New_Line;
-         when Network.ReadRateHistoryResponse =>
-           Put("ReadRateHistoryRequest (HDestination: ");
-           Principal.DebugPrintPrincipalPtr(Msg.HDestination);
-           Put("; History: "); 
-           for Index in Msg.History'Range loop
-              Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Rate));
-              Put(" @ "); Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Time));
-              Put(", ");
-           end loop;
-           Put(")"); New_Line;
-         when others =>
-            -- you should implement these for your own debugging if you wish
-            null;
-      end case;
-         Network.DebugPrintMessage(Msg);
+               if(
+                  CheckIsKnownPrincipal(
+                                        CandidatePrincipalPtr=>Msg.MOffSource,
+                                        KnownPrincipalArray => KnownPrincipals.all)
+                 ) then
+                  Put("ModeOff (MOffSource: ");
+                  Principal.DebugPrintPrincipalPtr(Msg.MOffSource);
+                  Put(")"); New_Line;
+                  ICD.Off(Icd => IcdUnit);
+                  
+               end if;
+
+            when Network.ReadRateHistoryRequest =>
+               if(
+                  CheckIsKnownPrincipal(
+                                        CandidatePrincipalPtr=>Msg.HSource,
+                                        KnownPrincipalArray => KnownPrincipals.all)
+                 ) then
+                  Put("ReadRateHistoryRequest (HSource: ");
+                  Principal.DebugPrintPrincipalPtr(Msg.HSource);
+                  Put(")"); New_Line;
+                  
+               end if;
+            when Network.ReadSettingsRequest =>
+               if(
+                  CheckIsKnownPrincipal(
+                                        CandidatePrincipalPtr=>Msg.RSource,
+                                        KnownPrincipalArray => KnownPrincipals.all)
+                 ) then
+                  Put("ReadSettingsRequest (RSource: ");
+                  Principal.DebugPrintPrincipalPtr(Msg.RSource);
+                  Put(")"); New_Line;
+                  if(ICD.readSet(TachyB => MsgBPM,
+                              JoulesToD => MsgJoules,
+                                 Icd => IcdUnit)) then
+                     sendMSg  :=(MessageType=>Network.ReadSettingsResponse,
+                                 RDestination=>Msg.RSource,
+                                 RTachyBound=>MsgBPM,
+                                 RJoulesToDeliver=>MsgJoules);
+                     Network.SendMessage(Net => Net,Message => sendMSg);
+                  else
+                     sendMSg :=(MessageType=>Network.ReadSettingsResponse,
+                                RDestination=>Msg.RSource,
+                                RTachyBound=>Measures.MIN_BPM,
+                                RJoulesToDeliver=>Measures.MIN_JOULES);
+                      Network.SendMessage(Net => Net,Message => sendMSg);
+                  end if;
+               end if;
+            -- will not enter here   
+            when Network.ReadRateHistoryResponse =>
+               if(
+                  CheckIsKnownPrincipal(
+                                        CandidatePrincipalPtr=>Msg.HDestination,
+                                        KnownPrincipalArray => KnownPrincipals.all)
+                 ) then
+                  Put("ReadRateHistoryRequest (HDestination: ");
+                  Principal.DebugPrintPrincipalPtr(Msg.HDestination);
+                  Put("; History: "); 
+                  for Index in Msg.History'Range loop
+                     Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Rate));
+                     Put(" @ "); Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Time));
+                     Put(", ");
+                  end loop;
+                  Put(")"); New_Line;
+               end if;
+               
+            when Network.ChangeSettingsRequest =>
+               if(
+                  CheckIsKnownPrincipal(
+                                        CandidatePrincipalPtr=>Msg.CSource,
+                                        KnownPrincipalArray => KnownPrincipals.all)
+                 ) then
+                  Put("ChangeSettingsRequest (CSource: ");
+                  Principal.DebugPrintPrincipalPtr(Msg.CSource);
+                  Put("| New TachyBound = ");
+                  Put(Msg.CTachyBound);
+                  Put("| New Joules = ");
+                  Put(Msg.CJoulesToDeliver);
+                  Put(") ");New_Line;
+                  
+               end if;
+               
+               when others =>
+                  -- you should implement these for your own debugging if you wish
+               null;
+         end case;
       end if;
       
       -- Read and print the current measured heart rate
       HRM.GetRate(Monitor, HeartRate);
-      Put("Measured heart rate  = ");
-      Put(Item => HeartRate);
-      New_Line;
+      --Put("Measured heart rate  = ");
+      --Put(Item => HeartRate);
+      --New_Line;
       
       -- record the initial history only
       if HistoryPos <= History'Last then
@@ -136,9 +241,25 @@ package body ClosedLoop is
       
       -- Tick all components to simulate the passage of one decisecond
       ImpulseGenerator.Tick(Generator, Hrt);
+      ICD.Tick(Icd => IcdUnit,
+               Hrh=>ICDHistory,
+               HeartRate=>HeartRate,
+               CurrentTime=>CurrentTime,
+               Generator => Generator,
+               Hrt=>Hrt,
+               ImpulseGeneratorcounter =>Impulsecounter,
+               ActiveFlag=>TreatmentActiveFlag);
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);
+      
+--      PUT("Health condition: ");
+--      if(ICD.IsOn(IcdUnit)) then
+--         Put_Line(IcdUnit.HealthType'Image);
+--      else
+--         Put_Line("MODE OFF");
+--      end if;
+
       
       CurrentTime := CurrentTime + 1;
       delay 0.1;

@@ -4,7 +4,7 @@ with Principal;
 with Ada.Numerics.Float_Random;          use Ada.Numerics.Float_Random;
 with Ada.Assertions;
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Integer_Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Network is
    
@@ -17,7 +17,7 @@ package body Network is
    
    -- we implement a very crude probabilistic model of the network
    -- the folloing is the probability that any message arrives each clock tick
-   NewMessageProbabilityPerTick : constant Uniformly_Distributed := 0.1;
+   NewMessageProbabilityPerTick : constant Uniformly_Distributed := 0.9;
 
    -- generate a random message for the ICD on the Network
    function GenerateRandomMessage(Principals : in PrincipalArray) 
@@ -143,7 +143,15 @@ package body Network is
               Put(" @ "); Ada.Integer_Text_IO.Put(Integer(Message.History(Index).Time));
               Put(", ");
            end loop;
-           Put(")"); New_Line;
+            Put(")"); New_Line;
+         when ReadSettingsResponse =>
+            Put("ReadSettingsResponse (RSource: ");
+            Principal.DebugPrintPrincipalPtr(Message.RDestination);
+            Put("|RTachyBound = ");
+            Put(Message.RTachyBound);
+            Put("|RJoulesToDeliver = ");
+            Put(Message.RJoulesToDeliver);
+            Put(")"); New_Line;
          when others =>
             -- you should implement these for your own debugging if you wish
             null;
