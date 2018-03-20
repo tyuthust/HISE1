@@ -33,34 +33,24 @@ package body ICD is
       Sum: Integer := 0;
       Temp_Minus: Integer;
       Output: Boolean:=False;
-      begin
+   begin
       for I in Integer range 1..Hrh'Last loop
          Temp_Minus:= Hrh(I).Rate-Hrh(I-1).Rate;
---           Put("Temp_Minus is :");
---           New_Line;
---           Put(Temp_Minus);
---           New_Line;
---           Put("Time:");
---           Put(Integer(Hrh(I).Time));
---           New_Line;
          if Temp_Minus>=0 then
             Sum:=Sum+Temp_Minus;
          else
             Sum:=Sum-Temp_Minus;
          end if;
       end loop;
---          Put("The sum is: ");
---          New_Line;
---          Put(Sum);
---          New_Line;
-      if Sum/6>=10 then
+      -- When the tick is less than 6 after then icd is inited, the data is too little to consider whether there is ventricle fibrillation
+      if Sum/6>=10 and InitCounter>6 then
          Output:=True;
-         end if;
+      end if;
       return Output;
-      end isVentricleFibrillation;
+   end isVentricleFibrillation;
 
 
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer; Icd: in ICDType) return Boolean is
+   function changeTachycardiaUpperBoundSet(TachyB: in Measures.BPM; Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
@@ -80,7 +70,7 @@ package body ICD is
       end if;
    end changeJoulesDeliverNumForVentricle_fibrillation;
 
-   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean is
+   function readSet(TachyB: out Measures.BPM;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean is
    begin
       if Icd.IsOn then
          return False;
@@ -211,8 +201,7 @@ package body ICD is
                                   HeartRate   => CurrentHeartRate);
          elsif isVentricleFibrillation(Hrh => Hrh) then
             -- When detected the tachycardia and it is not under a treatment, set the 1 signals and start the treatment
-            -- When the tick is less than 6 after then icd is inited, the data is too little to consider whether there is ventricle fibrillation
-            if ActiveFlag=False and InitCounter>6 then
+            if ActiveFlag=False then
                ImpulseGeneratorcounter:=1;
                ActiveFlag:=True;
             end if;
