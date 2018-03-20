@@ -50,17 +50,31 @@ package body ClosedLoop is
       IsKnown : Boolean := False;
    begin
       for i in Integer range KnownPrincipalArray'Range loop
-         if (Principal.PrincipalPtrToString(CandidatePrincipalPtr) = Principal.PrincipalPtrToString(KnownPrincipalArray(i))) then
+         if (Principal.PrincipalPtrToString(CandidatePrincipalPtr) 
+             = Principal.PrincipalPtrToString(KnownPrincipalArray(i))) then
             IsKnown := True;
          end if;
       end loop;
-      if (IsKnown) then
-         Put_Line("This is Known Pricipal");
-      else
-         Put_Line("This is NOT Known Pricipal");
-         end if;
-         return IsKnown;
+--      if (not IsKnown) then
+--         Put_Line("This is NOT Known Pricipal");
+--      end if;
+      return IsKnown;
    end CheckIsKnownPrincipal;
+   
+   -- check whether the candidate has the right to act
+   function CheckIsAuthorisedRoles(
+                                   CandidatePrincipal : 
+                                   in Principal.Principal;
+                                   AuthorisedRole: in Principal.Role) 
+                                  return Boolean is
+      IsAuthorised : Boolean := False;
+   begin
+      IsAuthorised := Principal.HasRole(P => CandidatePrincipal,R => AuthorisedRole);
+--      if (not IsAuthorised) then
+--         Put_Line("This is NOT an Authorised Role");
+--      end if;
+         return IsAuthorised;
+   end CheckIsAuthorisedRoles;
   
   -- This procedure should create three Principals: one Patient, one 
   -- Cardiologist and one Clinical Assistant. These are the authorised 
@@ -119,65 +133,129 @@ package body ClosedLoop is
       -- just print them out
       Network.GetNewMessage(Net,MsgAvailable,Msg);
       if (MsgAvailable) then
-
-         
-         
          -- feature based on the MSG
          case Msg.MessageType is
             when Network.ModeOn =>
-               -- check if principal is known
+               -- Principal should be known
+               -- only Card and Clin can access
+               Put("Try ModeOn");New_Line;
                if(
                   CheckIsKnownPrincipal(
-                                        CandidatePrincipalPtr=>Msg.MOnSource,
-                                        KnownPrincipalArray => KnownPrincipals.all)
+                                        CandidatePrincipalPtr
+                                        =>  Msg.MOnSource,
+                                        KnownPrincipalArray 
+                                        => KnownPrincipals.all)
+                  and (
+                     CheckIsAuthorisedRoles(
+                                            CandidatePrincipal => 
+                                              Msg.MOnSource.all,
+                                            AuthorisedRole =>
+                                              Principal.Cardiologist
+                                           )
+                       or
+                     CheckIsAuthorisedRoles(
+                                            CandidatePrincipal => 
+                                              Msg.MOnSource.all,
+                                            AuthorisedRole =>
+                                              Principal.ClinicalAssistant
+                                           )
+                    )
                  ) then
               
-                  Put("ModeOn (MOnSource: ");
-                  Principal.DebugPrintPrincipalPtr(Msg.MOnSource);
-                  Put(")"); New_Line;
+                  Put("Set Mode On");New_Line;
                   ICD.On(Icd => IcdUnit);
+                  if(ICD.IsOn(IcdUnit)) then
+                     Put_Line("Mode Is On");
+                  else
+                     Put_Line("Mode Is Off");
+                  end if;
+                  
                end if;
                
             when Network.ModeOff =>
+               -- Principal should be known
+               -- only Card and Clin can access
+               Put("Try ModeOff");New_Line;
                if(
                   CheckIsKnownPrincipal(
                                         CandidatePrincipalPtr=>Msg.MOffSource,
                                         KnownPrincipalArray => KnownPrincipals.all)
+                  and (
+                       CheckIsAuthorisedRoles(
+                                              CandidatePrincipal => 
+                                                Msg.MOffSource.all,
+                                              AuthorisedRole =>
+                                                Principal.Cardiologist
+                                           )
+                       or
+                         CheckIsAuthorisedRoles(
+                                                CandidatePrincipal => 
+                                                  Msg.MOffSource.all,
+                                                AuthorisedRole =>
+                                                  Principal.ClinicalAssistant
+                                               )
+                    )
                  ) then
-                  Put("ModeOff (MOffSource: ");
-                  Principal.DebugPrintPrincipalPtr(Msg.MOffSource);
-                  Put(")"); New_Line;
+                  Put("Set Mode Off");New_Line;
                   ICD.Off(Icd => IcdUnit);
+                  if(ICD.IsOn(IcdUnit)) then
+                     Put_Line("Mode Is On");
+                  else
+                     Put_Line("Mode Is Off");
+                  end if;
                   
                end if;
 
             when Network.ReadRateHistoryRequest =>
+               -- Principal should be known
+               -- all roles can read
+               Put("Try Read Rate History");New_Line;
                if(
                   CheckIsKnownPrincipal(
                                         CandidatePrincipalPtr=>Msg.HSource,
                                         KnownPrincipalArray => KnownPrincipals.all)
                  ) then
+                  
+                  Put("Read Rate History");New_Line;
                   Put("ReadRateHistoryRequest (HSource: ");
                   Principal.DebugPrintPrincipalPtr(Msg.HSource);
                   Put(")"); New_Line;
                   
                end if;
             when Network.ReadSettingsRequest =>
+               -- Principal should be known
+               -- only Card and Clin can access
+               Put("Try Read Settings");New_Line;
                if(
                   CheckIsKnownPrincipal(
                                         CandidatePrincipalPtr=>Msg.RSource,
                                         KnownPrincipalArray => KnownPrincipals.all)
+                  and (
+                       CheckIsAuthorisedRoles(
+                                              CandidatePrincipal => 
+                                                Msg.RSource.all,
+                                              AuthorisedRole =>
+                                                Principal.Cardiologist
+                                           )
+                       or
+                         CheckIsAuthorisedRoles(
+                                                CandidatePrincipal => 
+                                                  Msg.RSource.all,
+                                                AuthorisedRole =>
+                                                  Principal.ClinicalAssistant
+                                               )
+                    )
                  ) then
-                  Put("ReadSettingsRequest (RSource: ");
-                  Principal.DebugPrintPrincipalPtr(Msg.RSource);
-                  Put(")"); New_Line;
+                  Put("Read Settings Success if Off");New_Line;
                   if(ICD.readSet(TachyB => MsgBPM,
                               JoulesToD => MsgJoules,
                                  Icd => IcdUnit)) then
+                     Put_Line("Icd is Off, Read Successfully");
                      sendMSg  :=(MessageType=>Network.ReadSettingsResponse,
                                  RDestination=>Msg.RSource,
                                  RTachyBound=>MsgBPM,
                                  RJoulesToDeliver=>MsgJoules);
+                     Put_Line("Icd is On, Read failed return MIN Value to Network");
                      Network.SendMessage(Net => Net,Message => sendMSg);
                   else
                      sendMSg :=(MessageType=>Network.ReadSettingsResponse,
@@ -206,32 +284,87 @@ package body ClosedLoop is
                end if;
                
             when Network.ChangeSettingsRequest =>
+               -- Principal should be known
+               -- only Card can access
+               Put("Try ChangeSettings First Check Role");New_Line;
                if(
-                  CheckIsKnownPrincipal(
+                  (CheckIsKnownPrincipal(
                                         CandidatePrincipalPtr=>Msg.CSource,
                                         KnownPrincipalArray => KnownPrincipals.all)
+                  and
+                    CheckIsAuthorisedRoles(
+                                           CandidatePrincipal => 
+                                             Msg.CSource.all,
+                                           AuthorisedRole =>
+                                             Principal.Cardiologist
+                                          ))
                  ) then
-                  Put("ChangeSettingsRequest (CSource: ");
-                  Principal.DebugPrintPrincipalPtr(Msg.CSource);
-                  Put("| New TachyBound = ");
-                  Put(Msg.CTachyBound);
-                  Put("| New Joules = ");
-                  Put(Msg.CJoulesToDeliver);
-                  Put(") ");New_Line;
-                  
+                  Put("Try ChangeSettings Second Check OFF");New_Line;
+
+                  --apply change to ICD
+                  if(
+                     (
+                      ICD.changeTachycardiaUpperBoundSet
+                        (
+                         Icd => IcdUnit,
+                         TachyB => Msg.CTachyBound)
+                      and
+                        ICD.changeJoulesDeliverNumForVentricle_fibrillation
+                          (
+                           Icd => IcdUnit,
+                           JoulesToD => Msg.CJoulesToDeliver)
+                     )
+
+                    ) then
+                     Put("ChangeSettingsRequest | New TachyBound = ");
+                     Put(Msg.CTachyBound);
+                     Put("| New Joules = ");
+                     Put(Msg.CJoulesToDeliver);
+                     Put(") ");New_Line;
+                     sendMSg  :=(MessageType=>Network.ChangeSettingsResponse,
+                                 CDestination=>Msg.CSource);
+                     Network.SendMessage(Net => Net,Message => sendMSg);
+                  else
+                     Put("Mode is off cannot change");
+                     if(ICD.IsOn(Icd => IcdUnit))then
+                        Put("|On");New_Line;
+                     else
+                        Put("|Off");New_Line;
+                     end if;
+                     
+                  end if;
+                    -- ICD is on
+                    -- Change success
+                    -- TODO
                end if;
-               
                when others =>
                   -- you should implement these for your own debugging if you wish
                null;
          end case;
       end if;
+      -- Set On/Off
+      if(ICD.IsOn(IcdUnit)) then
+         if(not HRM.IsOn(Hrm => Monitor)) then
+            HRM.On(Hrt => Hrt,Hrm => Monitor);
+         end if;
+         if(not ImpulseGenerator.IsOn(Gen => Generator)) then
+            ImpulseGenerator.On(Gen => Generator);
+         end if;
+      else
+         if(HRM.IsOn(Hrm => Monitor)) then
+            HRM.Off(Monitor);
+         end if;
+         if(ImpulseGenerator.IsOn(Gen => Generator)) then
+            ImpulseGenerator.Off(Gen => Generator);
+         end if;
+         
+      end if;
       
       -- Read and print the current measured heart rate
       HRM.GetRate(Monitor, HeartRate);
-      --Put("Measured heart rate  = ");
-      --Put(Item => HeartRate);
-      --New_Line;
+      Put("Measured heart rate  = ");
+      Put(Item => HeartRate);
+      New_Line;
       
       -- record the initial history only
       if HistoryPos <= History'Last then
@@ -253,12 +386,13 @@ package body ClosedLoop is
       Heart.Tick(Hrt);
       Network.Tick(Net);
       
---      PUT("Health condition: ");
---      if(ICD.IsOn(IcdUnit)) then
---         Put_Line(IcdUnit.HealthType'Image);
---      else
---         Put_Line("MODE OFF");
---      end if;
+      PUT("Health condition: ");
+      if(ICD.IsOn(IcdUnit)) then
+         Put_Line(IcdUnit.HealthType'Image);
+      else
+         Put_Line("MODE OFF");
+      end if;
+      Put_Line("***************TICK_FIN*************** ");
 
       
       CurrentTime := CurrentTime + 1;
