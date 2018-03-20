@@ -7,13 +7,16 @@ with ImpulseGenerator;
 
 package body ICD is
    -- The initial upper bound for tachycardia when the system starts
-   TachyBound: Integer:=100;
+   TachyBound: Measures.BPM:=100;
 
    -- The initial number of joules to deliver in the case of a ventricle fibrillation
    JoulesToDeliver: Measures.Joules:=30;
 
    -- The constant of how much the given impulse rate should be greater than the current heart rate
    AboveHeartRate: Constant Measures.BPM:=15;
+
+   -- The init counter records how many ticks after the icd has been init
+   InitCounter: Integer:=-1;
 
    function isTachycardia(HeartRate: in BPM) return Boolean is
       Output: Boolean:=False;
@@ -109,6 +112,7 @@ package body ICD is
       end loop;
       Icd.HealthType:=Healthy;
       Icd.IsOn:=False;
+      InitCounter:=0;
    end Init;
 
    procedure On(Icd: out ICDType) is
@@ -147,7 +151,7 @@ package body ICD is
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
-         PUT("Down the treatment");
+         PUT("Down the Ta treatment");
          New_Line;
       end if;
    end activeWhenTachycardia;
@@ -165,7 +169,7 @@ package body ICD is
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
-         PUT("Down the treatment");
+         PUT("Done the VF treatment");
          New_Line;
       end if;
    end activeWhenVentricle_fibrillation;
@@ -182,12 +186,16 @@ package body ICD is
    CurrentHeartRate:Measures.BPM;
    begin
       if Icd.IsOn then
-            -- update the current time and heart rate in the heart rate history array(hrh).
-            updateHeartRateHistory(Hrh         => Hrh,
-                                   HeartRate   => HeartRate,
-                                   CurrentTime => CurrentTime);
-            if isTachycardia(HeartRate => HeartRate) then
-               -- When detected the tachycardia and it is not under a treatment, set the 10 signals and start the treatment
+         if InitCounter>=0 then
+            InitCounter:=InitCounter+1;
+         end if;
+
+         -- update the current time and heart rate in the heart rate history array(hrh).
+         updateHeartRateHistory(Hrh         => Hrh,
+                                HeartRate   => HeartRate,
+                                CurrentTime => CurrentTime);
+         if isTachycardia(HeartRate => HeartRate) then
+            -- When detected the tachycardia and it is not under a treatment, set the 10 signals and start the treatment
             if ActiveFlag=False then
                ImpulseGeneratorcounter:=10;
                CurrentHeartRate:=HeartRate;
@@ -203,7 +211,8 @@ package body ICD is
                                   HeartRate   => CurrentHeartRate);
          elsif isVentricleFibrillation(Hrh => Hrh) then
             -- When detected the tachycardia and it is not under a treatment, set the 1 signals and start the treatment
-            if ActiveFlag=False then
+            -- When the tick is less than 6 after then icd is inited, the data is too little to consider whether there is ventricle fibrillation
+            if ActiveFlag=False and InitCounter>6 then
                ImpulseGeneratorcounter:=1;
                ActiveFlag:=True;
             end if;
