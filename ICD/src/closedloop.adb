@@ -44,14 +44,19 @@ package body ClosedLoop is
   
    -- Records how many ticks happen in one minute
    TickTimesInOneMinute: constant Integer:=600;
-  
-   -- The float records the progress of a beats, when this value is greater than 1, 
-   -- address one impulse tick procedure and reset this variable as the mod result
-   ImpulseTickFloat: Float range 0.00..1.00:=0.00;
-  
-   -- It records whether a impulse tick procedure is done, if it has done, set as true, otherwise as false
+   
+   -- It records whether an impulse tick procedure is done, if it has done, set as true, otherwise as false
    ImpulseTickFlag: Boolean:=False;
    
+   -- It records whether an impulse needs to do, if it needs to do, set as true, otherwise as false
+   Ventricle_fibrillationActiveFlag: Boolean:=False;
+   
+   -- The float records the progress of a beats, when this value is greater than 1, 
+   -- address one impulse tick procedure and reset this variable as the mod result
+   ImpulseTickFloat: Float:=0.0;
+   
+   -- the fixed joulse deliver to heart when tachycardia
+   TachyJoules: constant Measures.Joules:=2;
    
    -- check whether the candidate Principal is a known one
    function CheckIsKnownPrincipal(
@@ -135,11 +140,14 @@ package body ClosedLoop is
   -- from authorised principals (e.g. by calling procedures of the ICD 
   -- package that you will write)
    procedure Tick is
+
+      
       -- Ready for response towards the request if applicable
       MsgJoules : Measures.Joules;
       MsgBPM : Measures.BPM;
       sendMSg : Network.NetworkMessage;
       MsgRateHistory:Network.RateHistory;
+      
    begin
       Put_Line("**************TICK_START************** ");
       -- read messages from the network but don't act on them here,
@@ -370,6 +378,7 @@ package body ClosedLoop is
       Put(Item => HeartRate);
       New_Line;
       
+
       
       -- Tick all components to simulate the passage of one decisecond
       ICD.Tick(Icd => IcdUnit,
@@ -381,13 +390,36 @@ package body ClosedLoop is
                ImpulseTickFloat =>ImpulseTickFloat ,                               
                ImpulseGeneratorcounter =>Impulsecounter,
                ActiveFlag=>TreatmentActiveFlag,
-               ImpulseTickFlag =>ImpulseTickFlag );
+               ImpulseTickFlag =>ImpulseTickFlag,
+               Ventricle_fibrillationActiveFlag=>Ventricle_fibrillationActiveFlag);
+      
 
-      ImpulseGenerator.Tick(Generator, Hrt);
+      if Ventricle_fibrillationActiveFlag then
+         ImpulseGenerator.Tick(Generator, Hrt);
+         Ventricle_fibrillationActiveFlag:=False;
+         PUT("Done the Vemtricle Fibrillation treatment");
+         New_Line;
+      elsif ImpulseTickFloat>1.0 then
+         -- Set the Joules of the impulse deliver to haert when Tachycardia
+         ImpulseGenerator.SetImpulse(Generator,TachyJoules);
+         PUT("Signals Joules: ");
+         PUT(TachyJoules);
+         New_Line;
+         ImpulseGenerator.Tick(Generator, Hrt);
+         PUT(Hrt.Impulse'Image);
+         ImpulseTickFloat:=ImpulseTickFloat-1.0;          
+         ImpulseTickFlag:=True;
+         New_Line;
+      end if;
 
+      
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);
+      
+      -- Reset the Joules of the impulse deliver to haert as 0 when once Tachycardia treatment is done 
+      -- or ventricle fibrallation is done
+      Hrt.Impulse:=0;
       
       PUT("Health condition: ");
       if(ICD.IsOn(IcdUnit)) then

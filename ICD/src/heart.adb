@@ -58,7 +58,9 @@ package body Heart is
 	   Measures.LimitBPM(Heart.Rate + DefaultChange);
       elsif (Heart.Impulse < SmallShock) then
 	 -- A crude slowing of the heart given a shock
-	 Heart.Rate := Measures.LimitBPM(Heart.Rate - Heart.Impulse);
+         Heart.Rate := Measures.LimitBPM(Heart.Rate - Heart.Impulse);
+         PUT("Doning the Tachycardia treatment");
+         New_Line;
       else -- a large shock
 	 Heart.Rate := 0;
          DefaultChange := 0;

@@ -55,20 +55,21 @@ package ICD is
    function IsOn(Icd : in ICDType) return Boolean;
    --# return B.IsOn;
    
-   -- The ICD will perform and call methods in impulse generator when Tachycardia happens
-   procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
-                                   Generator:in out ImpulseGenerator.GeneratorType;
-                                   HeartRate : in Measures.BPM;
-                                   ActiveFlag: in out Boolean;
-                                   TickTimesInOneMinute: in Integer;
-                                   ImpulseTickFloat: in out Float;
-                                   ImpulseTickFlag: in out Boolean);
+  
       
    
     -- The ICD will perform and call methods in impulse generator when Ventricle fibrillation happens
-   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
-                                              Generator: in out ImpulseGenerator.GeneratorType;
-                                              ActiveFlag: in out Boolean);
+   procedure activeWhenVentricle_fibrillation(Generator: in out ImpulseGenerator.GeneratorType;
+                                              Ventricle_fibrillationActiveFlag: in out Boolean);
+   
+    -- The ICD will perform and call methods in impulse generator when Tachycardia happens
+   procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
+                                   Generator: in out ImpulseGenerator.GeneratorType;
+                                   HeartRate : in Measures.BPM;
+                                   ActiveFlag: in out Boolean;
+                                   TickTimesInOneMinute: in Integer;
+                                   ImpulseTickFloat:out Float;
+                                   ImpulseTickFlag: in out Boolean);
    
    -- Tick the clock and Check the health type of the patient, call by closedLoop
    -- Activeflag param records whether the ICD is calling the impulsegenerator 
@@ -81,5 +82,6 @@ package ICD is
                   ImpulseTickFloat: in out Float;
                   ImpulseGeneratorcounter: in out Integer;
                   ActiveFlag: in out Boolean;
-                  ImpulseTickFlag: in out Boolean);
+                  ImpulseTickFlag: in out Boolean;
+                  Ventricle_fibrillationActiveFlag: in out Boolean);
 end ICD;

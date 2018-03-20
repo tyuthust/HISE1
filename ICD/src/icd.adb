@@ -124,78 +124,58 @@ package body ICD is
       return Icd.IsOn;
    end IsOn;
 
+
+
+
+   procedure activeWhenVentricle_fibrillation(Generator:in out ImpulseGenerator.GeneratorType;
+                                              Ventricle_fibrillationActiveFlag: in out Boolean) is
+   begin
+      ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
+      PUT("Signals Joules: ");
+      PUT(JoulesToDeliver);
+      New_Line;
+      Ventricle_fibrillationActiveFlag:=True;
+   end activeWhenVentricle_fibrillation;
+
    procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
                                    Generator:in out ImpulseGenerator.GeneratorType;
                                    HeartRate : in Measures.BPM;
                                    ActiveFlag: in out Boolean;
                                    TickTimesInOneMinute: in Integer;
-                                   ImpulseTickFloat:in out Float;
+                                   ImpulseTickFloat:out Float;
                                    ImpulseTickFlag: in out Boolean) is
-      TachyJoules: Measures.Joules:=2;
+
       TempHeartRate: Measures.BPM;
-      ReciprocalTickFloat: Float range 0.00..1.00 :=0.00;
+      -- This number is the reciprocal value of the impulse interval but more precise
+      ReciprocalTickFloat: Float range 0.0..1.0 :=0.0;
    begin
-      if ImpulseGeneratorcounter>0 and ImpulseTickFlag=True then
---        if ImpulseGeneratorcounter>0 then
-         -- Set the Joules of the impulse deliver to haert when Tachycardia
-         ImpulseGenerator.SetImpulse(Generator,TachyJoules);
-         -- Set the heart rate as the current heart rate plus above heart rate(15)
-         TempHeartRate:=HeartRate+AboveHeartRate;
-         PUT("ImpulseGenerator: ");
-         PUT(ImpulseGeneratorcounter);
-         New_Line;
-         ReciprocalTickFloat:=Float(TempHeartRate)/Float(TickTimesInOneMinute);
---           PUT("TempHeartrate/TickTimesInOneMinute : ");
---           PUT(ReciprocalTickFloat'Image);
---           New_Line;
-         -- Add the temp reciprocalTick in the Impulse tick progress
-         ImpulseTickFloat:=ImpulseTickFloat+ReciprocalTickFloat;
-         PUT("ImpulseTickFloat : ");
-         PUT(ImpulseTickFloat'Image);
-         New_Line;
-         ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
-         ImpulseTickFlag:=False;
+
+      TempHeartRate:=HeartRate+AboveHeartRate;
+      ReciprocalTickFloat:=Float(TempHeartRate)/Float(TickTimesInOneMinute);
+      -- Add the temp reciprocalTick in the Impulse tick progress
+      ImpulseTickFloat:=ReciprocalTickFloat;
+
+      PUT("Counter");
+      PUT(ImpulseGeneratorcounter);
+      New_Line;
+
+
+      if ImpulseGeneratorcounter>0  then
+         if ImpulseTickFlag then
+            ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
+            ImpulseTickFlag:=False;
+            ActiveFlag:=True;
+         end if;
       else
          -- The treatment stops
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
-         ImpulseGenerator.SetImpulse(Generator,J => 0);
-         PUT("Reset the impulse: ");
-         PUT(Generator.Impulse);
-         New_Line;
-         PUT("Done the Tachycardia treatment");
-         New_Line;
+--           ImpulseGenerator.SetImpulse(Generator,J => 0);
+--           PUT("Reset the impulse: ");
+--           PUT(Generator.Impulse);
+--           New_Line;
       end if;
    end activeWhenTachycardia;
-
-
-   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
-                                              Generator:in out ImpulseGenerator.GeneratorType;
-                                              ActiveFlag: in out Boolean) is
-   begin
-      if ImpulseGeneratorcounter>0 then
-         ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
-
-         PUT("Signals Joules: ");
-         PUT(JoulesToDeliver);
-         New_Line;
-         PUT("ImpulseGenerator: ");
-         PUT(ImpulseGeneratorcounter);
-         New_Line;
-         ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
-      else
-          -- The treatment stops
-         ActiveFlag:=False;
-         -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
-         ImpulseGenerator.SetImpulse(Generator,J => 0);
-         PUT("Reset the impulse: ");
-         PUT(Generator.Impulse);
-         New_Line;
-         PUT("Done the Vemtricle Fibrillation treatment");
-         New_Line;
-      end if;
-   end activeWhenVentricle_fibrillation;
-
 
    procedure Tick(Icd: in out ICDType;
                   Hrh: in out HeartRateHistory;
@@ -206,7 +186,9 @@ package body ICD is
                   ImpulseTickFloat: in out Float;
                   ImpulseGeneratorcounter: in out Integer;
                   ActiveFlag: in out Boolean;
-                  ImpulseTickFlag: in out Boolean) is
+                  ImpulseTickFlag: in out Boolean;
+                  Ventricle_fibrillationActiveFlag: in out Boolean) is
+   Temp_ImpulseTickFloat:Float:=0.0;
    begin
       if Icd.IsOn then
          if InitCounter>=0 then
@@ -215,38 +197,41 @@ package body ICD is
 
          -- update the current time and heart rate in the heart rate history array(hrh).
          updateHeartRateHistory(Hrh         => Hrh,
-                                HeartRate   => HeartRate,
-                                CurrentTime => CurrentTime);
-         if isTachycardia(HeartRate => HeartRate) then
+                             HeartRate   => HeartRate,
+                             CurrentTime => CurrentTime);
+         if isTachycardia(HeartRate => HeartRate) or ImpulseGeneratorcounter>0 then
             -- When detected the tachycardia and it is not under a treatment, set the 10 signals and start the treatment
             if ActiveFlag=False then
-               ImpulseGeneratorcounter:=10;
                ActiveFlag:=True;
                CurrentHeartRate:=HeartRate;
+               ImpulseGeneratorcounter:=10;
             end if;
-
             -- Set the health type as tachycardia
             Icd.HealthType:=Tachycardia;
 
             activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
                                   Generator               => Generator ,
                                   TickTimesInOneMinute =>TickTimesInOneMinute,
-                                  ImpulseTickFloat =>ImpulseTickFloat,
+                                  ImpulseTickFloat =>Temp_ImpulseTickFloat,
                                   ActiveFlag              => ActiveFlag,
                                   ImpulseTickFlag =>ImpulseTickFlag,
                                   HeartRate   => CurrentHeartRate);
+            PUT("INIT: ");
+            PUT(ImpulseTickFloat'Image);
+            New_Line;
+            ImpulseTickFloat:=ImpulseTickFloat+Temp_ImpulseTickFloat;
+            PUT("TEMP: ");
+            PUT(Temp_ImpulseTickFloat'Image);
+            New_Line;
+            PUT("Impulse: ");
+            PUT(ImpulseTickFloat'Image);
+            New_Line;
          elsif isVentricleFibrillation(Hrh => Hrh) then
-            -- When detected the tachycardia and it is not under a treatment, set the 1 signals and start the treatment
-            if ActiveFlag=False then
-               ImpulseGeneratorcounter:=1;
-               ActiveFlag:=True;
-            end if;
-
             -- Set the health type as ventricle fibrillation
             Icd.HealthType:=Ventricle_fibrillation;
-            activeWhenVentricle_fibrillation(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
-                                             Generator               => Generator,
-                                             ActiveFlag              => ActiveFlag);
+            -- When detected the tachycardia and it is not under a treatment, start the treatment
+            activeWhenVentricle_fibrillation(Generator               => Generator,
+                                             Ventricle_fibrillationActiveFlag => Ventricle_fibrillationActiveFlag);
          else
             -- Set the health type as healthy
             Icd.HealthType:=Healthy;
