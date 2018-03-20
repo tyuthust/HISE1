@@ -5,11 +5,12 @@ A -march=pentium4
 P ZX
 
 RN
+RV NO_DIRECT_BOOLEAN_OPERATORS
 RV NO_IO
 RV NO_IMPLEMENTATION_PRAGMAS
 RV SPARK_05
 
-U icd%b			icd.adb			65159e11 NE OO PK IU
+U icd%b			icd.adb			ab487965 NE OO PK IU
 W ada%s			ada.ads			ada.ali
 W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
 W ada.tags%s		a-tags.adb		a-tags.ali
@@ -19,7 +20,7 @@ W impulsegenerator%s	impulsegenerator.adb	impulsegenerator.ali
 W measures%s		measures.adb		measures.ali
 W network%s		network.adb		network.ali
 
-U icd%s			icd.ads			18423bfc EE NE OO PK IU
+U icd%s			icd.ads			7f6ee73a EE NE OO PK IU
 W ada.tags%s		a-tags.adb		a-tags.ali
 W heart%s		heart.adb		heart.ali
 W impulsegenerator%s	impulsegenerator.adb	impulsegenerator.ali
@@ -40,15 +41,15 @@ D a-tags.ads		20170516105954 d3a89129 ada.tags%s
 D a-textio.ads		20170516105954 386df5d4 ada.text_io%s
 D a-tiinio.ads		20170516105950 aa04e5d6 ada.text_io.integer_io%s
 D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
-D heart.ads		20180317145212 9fbc8907 heart%s
-D icd.ads		20180319134624 6f389e2d icd%s
-D icd.adb		20180319134822 b371d99d icd%b
-D impulsegenerator.ads	20180317145212 31c22809 impulsegenerator%s
+D heart.ads		20180320052250 9fbc8907 heart%s
+D icd.ads		20180320052400 081442eb icd%s
+D icd.adb		20180320061118 1a00e22f icd%b
+D impulsegenerator.ads	20180320052250 31c22809 impulsegenerator%s
 D interfac.ads		20170516105950 5ab55268 interfaces%s
 D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
-D measures.ads		20180319111220 ab0ff7ab measures%s
-D network.ads		20180317145212 720bf374 network%s
-D principal.ads		20180317145212 ba98eec4 principal%s
+D measures.ads		20180320052250 ab0ff7ab measures%s
+D network.ads		20180320052250 720bf374 network%s
+D principal.ads		20180320052250 ba98eec4 principal%s
 D system.ads		20170516105954 32a08138 system%s
 D s-atocou.ads		20170516105956 b45c2d8d system.atomic_counters%s
 D s-crtl.ads		20170516105948 0ebbdb71 system.crtl%s
@@ -72,102 +73,113 @@ X 9 a-iteint.ads
 32h9 Reversible_Iterator<24R9[3|69]>
 X 12 a-textio.ads
 49K13*Text_IO 471e16 17|1w10 1r27
-166U14*New_Line 17|161s13
+166U14*New_Line 17|141s10 145s10 148s10 156s10 158s10 172s10 175s10 184s10
+. 186s10
+242U14*Put 17|139s10 143s10 146s10 154s10 157s10 170s10 173s10 182s10 185s10
+X 13 a-tiinio.ads
+66U14*Put 17|140s10[7|18] 144s10[7|18] 147s10[7|18] 155s10[7|18] 171s10[7|18]
+. 174s10[7|18] 183s10[7|18]
 X 15 heart.ads
-7K9*Heart 39e11 16|2w6 2r17 59r135 66r172 17|4w6 4r17 132r135 140r7 154r172
-10R9*HeartType 18e17 16|59r141 66r178 17|132r141 154r178
-13i10*Rate{21|15I12} 17|143m11
-33U14*GetRate 17|140s13
-33r22 Heart{10R9} 17|140r21
-34i22 Rate{21|15I12} 17|141r21
+7K9*Heart 39e11 16|2w6 2r17 61r49 77r32 17|4w6 4r17 129r49 196r32
+10R9*HeartType 18e17 16|61r55 77r38 17|129r55 196r38
+13i10*Rate{21|15I12} 17|138m14 147r18
 X 16 icd.ads
-8K9*ICD 67l5 67e8 17|8b14 187l5 187t8
-13E6*PatientHeartHealthType 13e77 21r21
-13n33*Healthy{13E6} 17|113r23 179r29
-13n42*Tachycardia{13E6} 17|162r29
-13n54*Ventricle_fibrillation{13E6} 17|172r35
-15i1*HISTORY_LENGTH{integer} 16r50
-16A6*HeartRateHistory(22|35R9)<integer> 30r45 43r49 46r31 66r51 17|29r45
-. 92r49 106r31 154r51
-18R6*ICDType 23e15 34r71 37r99 40r80 46r57 49r26 52r28 55r27 66r31 17|60r72
-. 70r99 80r80 106r57 117r26 122r27 127r27 154r31
-21e8*HealthType{13E6} 17|113m11 162m17 172m23 179m17
-22b8*IsOn{boolean} 17|62r14 72r14 82r14 114m11 119m11 124m11 129r18 156r14
-26V13*isTachycardia{boolean} 26>27 17|18b13 27l8 27t21 160s13
-26i27 HeartRate{21|15I12} 17|18b27 21r10 160r27
-30V13*isVentricleFibrillation{boolean} 30>37 17|29b13 57l11 57t34 169s16
-30a37 Hrh{16A6} 17|29b37 34r33 35r23 35r35 169r40
-34V13*changeTachycardiaUpperBoundSet{boolean} 34>44 34>63 17|60b13 68l8 68t38
-34i44 TachyB{integer} 17|60b44 65r22
-34r63 Icd{18R6} 17|60b64 62r10
+8K9*ICD 80l5 80e8 17|8b14 243l5 243t8
+13E9*PatientHeartHealthType 13e80 21r23
+13n36*Healthy{13E9} 17|107r23 239r29
+13n45*Tachycardia{13E9} 17|218r29
+13n57*Ventricle_fibrillation{13E9} 17|233r29
+15i4*HISTORY_LENGTH{integer} 16r53
+16A9*HeartRateHistory(22|35R9)<integer> 30r45 43r49 46r31 73r31 17|35r45
+. 89r49 100r31 192r31
+18R9*ICDType 23e15 34r76 37r99 40r85 46r57 49r26 52r28 55r27 72r31 17|57r77
+. 67r99 77r85 100r57 112r26 117r27 122r27 191r31
+21e10*HealthType{13E9} 17|107m11 218m17 233m17 239m17
+22b10*IsOn{boolean} 17|59r14 69r14 79r14 108m11 114m11 119m11 124r18 200r14
+26V13*isTachycardia{boolean} 26>27 17|24b13 33l8 33t21 209s13
+26i27 HeartRate{21|15I12} 17|24b27 27r10 209r27
+30V13*isVentricleFibrillation{boolean} 30>37 17|35b13 54l8 54t31 225s16
+30a37 Hrh{16A9} 17|35b37 40r33 41r23 41r35 225r40
+34V13*changeTachycardiaUpperBoundSet{boolean} 34>44 34>68 17|57b13 65l8 65t38
+34i44 TachyB{21|15I12} 17|57b44 62r22
+34r68 Icd{18R9} 17|57b69 59r10
 37V13*changeJoulesDeliverNumForVentricle_fibrillation{boolean} 37>61 37>91
-. 17|70b13 78l8 78t55
-37i61 JoulesToD{21|9I12} 17|70b61 75r27
-37r91 Icd{18R6} 17|70b91 72r10
-40V13*readSet{boolean} 40<21 40<41 40>72 17|80b13 89l8 89t15
-40i21 TachyB{integer} 17|80b21 85m10
-40i41 JoulesToD{21|9I12} 17|80b41 86m10
-40r72 Icd{18R6} 17|80b72 82r10
-43U14*updateHeartRateHistory 43=37 43>66 43>84 17|92b14 104l8 104t30 157s10
-43a37 Hrh{16A6} 17|92b37 93r29 98r24 99m10 99r36 100r36 103m7 103r11 157r33
-43i66 HeartRate{21|15I12} 17|92b67 103r32 158r27
-43m84 CurrentTime{21|18M9} 17|92b86 103r51 159r32
-46U14*Init 46=19 46<48 17|106b14 115l8 115t12
-46a19 Hrh{16A6} 17|106b19 109r33 110m10 111m10
-46r48 Icd{18R6} 17|106b48 113m7 114m7
-49U14*On 49<17 17|117b14 120l8 120t10
-49r17 Icd{18R6} 17|117b17 119m7
-52U14*Off 52<18 17|122b14 125l8 125t11
-52r18 Icd{18R6} 17|122b18 124m7
-55V13*IsOn{boolean} 55>18 17|127b13 130l8 130t12
-55r18 Icd{18R6} 17|127b18 129r14
-59U14*activeWhenTachycardia 59<36 59=73 59=122 17|132b14 144l8 144t29 164s16
-59i36 ImpulseGeneratorcounter{integer} 17|132b36 139m7 164r38
-59r73 Generator{18|10R9} 17|132b73 137m35 165r38
-59r122 Hrt{15|10R9} 17|132b122 140r30 143m7 166r38
-62U14*activeWhenVentricle_fibrillation 62=47 62=87 17|147b14 151l8 151t40
-. 173s19
-62i47 ImpulseGeneratorcounter{integer} 17|147b47 149m7 173r52
-62r87 Generator{18|10R9} 17|147b87 150m35 174r52
-66U14*Tick 66=19 66=39 66>68 66>86 66=111 66=159 66=188 66=228 17|154b14
-. 184l8 184t12
-66r19 Icd{18R6} 17|154b19 156r10 162m13 172m19 179m13
-66a39 Hrh{16A6} 17|154b39 157m48 169r47
-66i68 HeartRate{21|15I12} 17|154b68 158r42 160r40
-66m86 CurrentTime{21|18M9} 17|154b86 159r47 170r16
-66r111 Generator{18|10R9} 17|154b111 165m65 174m79
-66r159 Hrt{15|10R9} 17|154b159 166m65
-66i188 ImpulseGeneratorcounter{integer} 17|154b188 164m65 173m79
-66b228 ActiveFlag{boolean} 17|154b228 163r16 167m16 171r19 175m19
+. 17|67b13 75l8 75t55
+37i61 JoulesToD{21|9I12} 17|67b61 72r27
+37r91 Icd{18R9} 17|67b91 69r10
+40V13*readSet{boolean} 40<21 40<46 40>77 17|77b13 86l8 86t15
+40i21 TachyB{21|15I12} 17|77b21 82m10
+40i46 JoulesToD{21|9I12} 17|77b46 83m10
+40r77 Icd{18R9} 17|77b77 79r10
+43U14*updateHeartRateHistory 43=37 43>66 43>84 17|89b14 98l8 98t30 206s10
+43a37 Hrh{16A9} 17|89b37 90r29 92r24 93m10 93r36 94r36 97m7 97r11 206r33
+43i66 HeartRate{21|15I12} 17|89b67 97r32 207r33
+43m84 CurrentTime{21|18M9} 17|89b86 97r51 208r33
+46U14*Init 46=19 46<48 17|100b14 110l8 110t12
+46a19 Hrh{16A9} 17|100b19 103r33 104m10 105m10
+46r48 Icd{18R9} 17|100b48 107m7 108m7
+49U14*On 49<17 17|112b14 115l8 115t10
+49r17 Icd{18R9} 17|112b17 114m7
+52U14*Off 52<18 17|117b14 120l8 120t11
+52r18 Icd{18R9} 17|117b18 119m7
+55V13*IsOn{boolean} 55>18 17|122b13 125l8 125t12
+55r18 Icd{18R9} 17|122b18 124r14
+59U14*activeWhenTachycardia 59=36 60=36 61=36 62>36 63=36 17|127b14 160l8
+. 160t29 220s13
+59i36 ImpulseGeneratorcounter{integer} 17|127b36 134r10 140r14 142m10 142r35
+. 220r35
+60r36 Generator{18|10R9} 17|128b36 136m38 153m38 155r14 221r35
+61r36 Hrt{15|10R9} 17|129b36 138m10 147r14 222r35
+62i36 HeartRate{21|15I12} 17|130b36 138r20 144r14 224r35
+63b36 ActiveFlag{boolean} 17|131b36 151m10 223r35
+66U14*activeWhenVentricle_fibrillation 66=47 67=47 68=47 17|163b14 188l8
+. 188t40 234s13
+66i47 ImpulseGeneratorcounter{integer} 17|163b47 167r10 174r14 176m10 176r35
+. 234r46
+67r47 Generator{18|10R9} 17|164b47 168m38 181m38 183r14 235r46
+68b47 ActiveFlag{boolean} 17|165b47 179m10 236r46
+72U14*Tick 72=19 73=19 74>19 75>19 76=19 77=19 78=19 79=19 17|191b14 242l8
+. 242t12
+72r19 Icd{18R9} 17|191b19 200r10 218m13 233m13 239m13
+73a19 Hrh{16A9} 17|192b19 206m48 225r47
+74i19 HeartRate{21|15I12} 17|193b19 207r48 209r40 214r34
+75m19 CurrentTime{21|18M9} 17|194b19 208r48
+76r19 Generator{18|10R9} 17|195b19 221m62 235m73
+77r19 Hrt{15|10R9} 17|196b19 222m62
+78i19 ImpulseGeneratorcounter{integer} 17|197b19 212m16 220m62 228m16 234m73
+79b19 ActiveFlag{boolean} 17|198b19 211r16 213m16 223m62 227r16 229m16 236m73
 X 17 icd.adb
-10i4 TachyBound{integer} 21r20 65m10 85r18
-13i4 JoulesToDeliver{21|9I12} 75m10 86r21 150r45
-16i4 AboveHeartRate{21|15I12} 142r28
-19b7 Output{boolean} 22m10 24m10 26r14
-30i7 Sum{integer} 44m13 44r18 46m13 46r18 53r10
-31i7 Temp_Minus{integer} 35m10 43r13 44r22 46r22
-32b7 Output{boolean} 54m10 56r14
-34i11 I{integer} 35r27 35r39
-93i7 HistoryPro{integer} 98r13 99r14 99r40 100r40 101m10 101r22
-107i7 DefaultHR{21|15I12} 111r23
-109i11 I{integer} 110r14 111r14
-133i7 HeartRate{21|15I12} 141m30 142m7 142r18 143r17
-134i7 TachyJoules{21|9I12} 137r45
+10i4 TachyBound{21|15I12} 27r20 62m10 82r18
+13i4 JoulesToDeliver{21|9I12} 72m10 83r21 168r48 171r14
+16i4 AboveHeartRate{21|15I12} 138r30
+19i4 InitCounter{integer} 49r24 109m7 201r13 202m13 202r26
+22i4 CurrentHeartRate{21|15I12} 214m16 224r50
+25b7 Output{boolean} 28m10 30m10 32r14
+36i7 Sum{integer} 43m13 43r18 45m13 45r18 49r10
+37i7 Temp_Minus{integer} 41m10 42r13 43r22 45r22
+38b7 Output{boolean} 51m10 53r14
+40i11 I{integer} 41r27 41r39
+90i7 HistoryPro{integer} 92r13 93r14 93r40 94r40 95m10 95r22
+101i7 DefaultHR{21|15I12} 105r23
+103i11 I{integer} 104r14 105r14
+132i7 TachyJoules{21|9I12} 136r48
 X 18 impulsegenerator.ads
-7K9*ImpulseGenerator 16|4w6 59r90 62r105 66r128 17|6w6 132r90 137r7 147r104
-. 150r7 154r128 18|38e21
-10R9*GeneratorType 16|59r107 62r122 66r145 17|132r107 147r121 154r145 18|18e17
-33U14*SetImpulse 17|137s24 150s24
+7K9*ImpulseGenerator 16|4w6 60r53 67r65 76r36 17|6w6 128r53 136r10 153r10
+. 164r64 168r10 181r10 195r36 18|38e21
+10R9*GeneratorType 16|60r70 67r82 76r53 17|128r70 164r81 195r53 18|18e17
+14i10*Impulse{21|9I12} 17|155r24 183r24
+33U14*SetImpulse 17|136s27 153s27 168s27 181s27
+33i53 J{21|9I12} 17|153r48 181r48
 X 21 measures.ads
-3K9*Measures 16|3w6 3r20 37r75 40r56 17|3w6 13r21 16r29 70r75 80r56 133r18
-. 134r20 21|34e13
-9I12*Joules{integer} 16|37r84 40r65 17|13r30 70r84 80r65 134r29
-15I12*BPM{integer} 16|26r41 43r80 66r82 17|16r38 18r41 92r81 107r17 133r27
-. 154r82
-18M9*TickCount 16|43r99 66r101 17|92r102 110r23 110r33 154r101
+3K9*Measures 16|3w6 3r20 34r55 37r75 40r33 40r61 62r51 17|3w6 10r16 13r21
+. 16r29 22r21 57r55 67r75 77r33 77r61 132r20 21|34e13
+9I12*Joules{integer} 16|37r84 40r70 17|13r30 67r84 77r70 132r29
+15I12*BPM{integer} 16|26r41 34r64 40r42 43r80 62r60 74r33 17|10r25 16r38
+. 22r30 24r41 57r64 77r42 89r81 101r17 130r50 193r33
+18M9*TickCount 16|43r99 75r34 17|89r102 104r23 104r33 194r34
 X 22 network.ads
-6K9*Network 16|1w6 16r69 17|5w6 22|118e12
-35R9*RateRecord 16|16r77 22|38e14
-36i7*Rate{21|15I12} 17|35r30 35r44 99m28 99r54 103m24 111m17
-37m7*Time{21|18M9} 17|100m28 100r54 103m43 110m17
+6K9*Network 16|1w6 16r72 17|5w6 22|118e12
+35R9*RateRecord 16|16r80 22|38e14
+36i7*Rate{21|15I12} 17|41r30 41r44 93m28 93r54 97m24 105m17
+37m7*Time{21|18M9} 17|94m28 94r54 97m43 104m17
 

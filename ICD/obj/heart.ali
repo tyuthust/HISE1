@@ -6,9 +6,14 @@ P ZX
 
 RN
 RV NO_FLOATING_POINT
+RV NO_IO
 RV NO_IMPLEMENTATION_PRAGMAS
+RV SPARK_05
 
-U heart%b		heart.adb		34a19a2a NE OO PK
+U heart%b		heart.adb		76fa7c14 NE OO PK
+W ada%s			ada.ads			ada.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
 W measures%s		measures.adb		measures.ali
 W randomnumber%s	randomnumber.adb	randomnumber.ali
 
@@ -16,52 +21,80 @@ U heart%s		heart.ads		34b37eac EE NE OO PK
 W measures%s		measures.adb		measures.ali
 
 D ada.ads		20170516105950 76789da1 ada%s
+D a-except.ads		20170516105952 291912d5 ada.exceptions%s
+D a-inteio.ads		20170516105954 f64b89a4 ada.integer_text_io%s
+D a-ioexce.ads		20170516105948 e4a01f64 ada.io_exceptions%s
 D a-numeri.ads		20170516105950 bb51c45a ada.numerics%s
 D a-nuflra.ads		20170516105950 4056ab7a ada.numerics.float_random%s
+D a-stream.ads		20170516105952 119b8fb3 ada.streams%s
+D a-tags.ads		20170516105954 d3a89129 ada.tags%s
+D a-textio.ads		20170516105954 386df5d4 ada.text_io%s
+D a-tiinio.ads		20170516105950 aa04e5d6 ada.text_io.integer_io%s
 D a-unccon.ads		20170516105954 31484697 ada.unchecked_conversion%s
-D heart.ads		20180317145212 9fbc8907 heart%s
-D heart.adb		20180317145212 b88ce10c heart%b
+D heart.ads		20180320052250 9fbc8907 heart%s
+D heart.adb		20180320060936 34f17b42 heart%b
 D interfac.ads		20170516105950 5ab55268 interfaces%s
-D measures.ads		20180319111220 ab0ff7ab measures%s
-D randomnumber.ads	20180317145212 b89e058a randomnumber%s
+D i-cstrea.ads		20170516105950 e53d8b8e interfaces.c_streams%s
+D measures.ads		20180320052250 ab0ff7ab measures%s
+D randomnumber.ads	20180320052250 b89e058a randomnumber%s
 D system.ads		20170516105954 32a08138 system%s
+D s-crtl.ads		20170516105948 0ebbdb71 system.crtl%s
 D s-exctab.ads		20170516105954 54135002 system.exception_table%s
+D s-ficobl.ads		20170516105956 078245e4 system.file_control_block%s
+D s-parame.ads		20170516105954 7e2a0d7f system.parameters%s
 D s-rannum.ads		20170516105952 99ade2f2 system.random_numbers%s
+D s-soflin.ads		20170516105950 14e1eb6c system.soft_links%s
+D s-stache.ads		20170516105954 a37c21ec system.stack_checking%s
 D s-stalib.ads		20170516105954 09bd3940 system.standard_library%s
-X 5 heart.ads
-7K9*Heart 39l6 39e11 6|4b14 72l5 72t10
-10R9*HeartType 18e17 22r31 26r40 29r35 33r33 37r34 6|23r31 33r40 39r33 45r35
-. 50r34
-13i10*Rate{8|15I12} 6|26m13 42r21 55m16 56r36 59m16 59r48 61m16 66m13 67r70
-16i10*Impulse{8|9I12} 6|30m13 36m13 47r20 52r17 57r20 59r61
-22U14*Init 22<19 6|23b14 31l8 31t12
-22r19 Heart{10R9} 6|23b19 26m7 30m7
-26U14*SetImpulse 26=25 26>51 6|33b14 37l8 37t18
-26r25 Heart{10R9} 6|33b25 36m7
-26i51 Joules{8|9I12} 6|34b25 36r24
-29V13*GetImpulse{8|9I12} 29>24 6|45b13 48l8 48t18
-29r24 Heart{10R9} 6|45b24 47r14
-33U14*GetRate 33>22 34<22 6|39b14 43l8 43t15
-33r22 Heart{10R9} 6|39b22 42r15
-34i22 Rate{8|15I12} 6|40b22 42m7
-37U14*Tick 37=19 6|50b14 70l8 70t12
-37r19 Heart{10R9} 6|50b19 52r11 55m10 56r30 57r14 59m10 59r42 59r55 61m10
-. 66m7 67r64
-X 6 heart.adb
-7i4 NoShock{8|9I12} 52r27
-8i4 SmallShock{8|9I12} 57r30
-11i4 HeartRateMu{8|15I12} 28r43
-12i4 HeartRateSigma{8|15I12} 29r43
-15f4 Volatility{float} 68r64
-18i4 DefaultChange{integer} 56r43 62m10
-X 8 measures.ads
-3K9*Measures 5|1w6 13r17 16r20 26r63 29r53 34r33 6|1w6 7r23 8r26 11r27 12r30
-. 27r9 34r37 40r33 45r53 56r12 59r24 67r9 8|34e13
-9I12*Joules{integer} 5|16r29 26r72 29r62 6|7r32 8r35 34r46 45r62
-15I12*BPM{integer} 5|13r26 34r42 6|11r36 12r39 40r42
-27V13*LimitBPM{15I12} 6|27s18 56s21 59s33 67s18
-X 9 randomnumber.ads
-4K9*RandomNumber 6|2w6 27r27 67r27 9|44e17
-8V13*NormalInteger{integer} 6|28s29
-33V13*UniformIntegerWithError{integer} 6|67s40
+D s-stoele.ads		20170516105956 2dc34a04 system.storage_elements%s
+D s-traent.ads		20170516105950 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20170516105952 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20170516105954 1b7d22d2 system.wch_con%s
+X 1 ada.ads
+16K9*Ada 20e8 13|3r6 3r23 4r6 4r31
+X 3 a-inteio.ads
+18K13*Integer_Text_IO[10|46] 13|4w10 4r35
+X 9 a-textio.ads
+49K13*Text_IO 471e16 13|3w10 3r27
+166U14*New_Line 13|73s7
+242U14*Put 13|71s7
+X 10 a-tiinio.ads
+66U14*Put 13|72s7[3|18]
+X 12 heart.ads
+7K9*Heart 39l6 39e11 13|6b14 76l5 76t10
+10R9*HeartType 18e17 22r31 26r40 29r35 33r33 37r34 13|25r31 35r40 41r33 47r35
+. 52r34
+13i10*Rate{16|15I12} 13|28m13 44r21 57m16 58r36 61m16 61r48 63m16 68m13 69r70
+. 72r17
+16i10*Impulse{16|9I12} 13|32m13 38m13 49r20 54r17 59r20 61r61
+22U14*Init 22<19 13|25b14 33l8 33t12
+22r19 Heart{10R9} 13|25b19 28m7 32m7
+26U14*SetImpulse 26=25 26>51 13|35b14 39l8 39t18
+26r25 Heart{10R9} 13|35b25 38m7
+26i51 Joules{16|9I12} 13|36b25 38r24
+29V13*GetImpulse{16|9I12} 29>24 13|47b13 50l8 50t18
+29r24 Heart{10R9} 13|47b24 49r14
+33U14*GetRate 33>22 34<22 13|41b14 45l8 45t15
+33r22 Heart{10R9} 13|41b22 44r15
+34i22 Rate{16|15I12} 13|42b22 44m7
+37U14*Tick 37=19 13|52b14 74l8 74t12
+37r19 Heart{10R9} 13|52b19 54r11 57m10 58r30 59r14 61m10 61r42 61r55 63m10
+. 68m7 69r64 72r11
+X 13 heart.adb
+9i4 NoShock{16|9I12} 54r27
+10i4 SmallShock{16|9I12} 59r30
+13i4 HeartRateMu{16|15I12} 30r43
+14i4 HeartRateSigma{16|15I12} 31r43
+17f4 Volatility{float} 70r64
+20i4 DefaultChange{integer} 58r43 64m10
+X 16 measures.ads
+3K9*Measures 12|1w6 13r17 16r20 26r63 29r53 34r33 13|1w6 9r23 10r26 13r27
+. 14r30 29r9 36r37 42r33 47r53 58r12 61r24 69r9 16|34e13
+9I12*Joules{integer} 12|16r29 26r72 29r62 13|9r32 10r35 36r46 47r62
+15I12*BPM{integer} 12|13r26 34r42 13|13r36 14r39 42r42
+27V13*LimitBPM{15I12} 13|29s18 58s21 61s33 69s18
+X 17 randomnumber.ads
+4K9*RandomNumber 13|2w6 29r27 69r27 17|44e17
+8V13*NormalInteger{integer} 13|30s29
+33V13*UniformIntegerWithError{integer} 13|69s40
 

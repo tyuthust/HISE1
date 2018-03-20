@@ -17,7 +17,7 @@ package body Network is
    
    -- we implement a very crude probabilistic model of the network
    -- the folloing is the probability that any message arrives each clock tick
-   NewMessageProbabilityPerTick : constant Uniformly_Distributed := 0.9;
+   NewMessageProbabilityPerTick : constant Uniformly_Distributed := 0.1;
 
    -- generate a random message for the ICD on the Network
    function GenerateRandomMessage(Principals : in PrincipalArray) 

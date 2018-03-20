@@ -373,7 +373,7 @@ package body ClosedLoop is
       end if;
       
       -- Tick all components to simulate the passage of one decisecond
-      ImpulseGenerator.Tick(Generator, Hrt);
+            ImpulseGenerator.Tick(Generator, Hrt);
       ICD.Tick(Icd => IcdUnit,
                Hrh=>ICDHistory,
                HeartRate=>HeartRate,
@@ -382,6 +382,7 @@ package body ClosedLoop is
                Hrt=>Hrt,
                ImpulseGeneratorcounter =>Impulsecounter,
                ActiveFlag=>TreatmentActiveFlag);
+
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);

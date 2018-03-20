@@ -1,5 +1,7 @@
 with Heart;
 with RandomNumber; 
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body HRM is
    
@@ -44,10 +46,16 @@ package body HRM is
 	 -- read the heart rate from the heart
 	 Heart.GetRate(Hrt, Hrm.Rate);
 	 
+         PUT("Heart Rate2: ");
+         PUT(Hrm.Rate);
+         New_Line;
 	 -- Insert some random variation
 	 Hrm.Rate := 
 	   Measures.LimitBPM(RandomNumber.UniformIntegerWithError(Hrm.Rate, 
-								  Error));
+                      Error));
+         PUT("Heart Rate3: ");
+         PUT(Hrm.Rate);
+         New_Line;
       else
 	 -- If the monitor is not on, return 0 for both values
 	 Hrm.Rate := Measures.BPM'First;

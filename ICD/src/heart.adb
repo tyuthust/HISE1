@@ -1,5 +1,7 @@
 with Measures; 
 with RandomNumber;
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 package body Heart is
    
@@ -59,14 +61,16 @@ package body Heart is
 	 Heart.Rate := Measures.LimitBPM(Heart.Rate - Heart.Impulse);
       else -- a large shock
 	 Heart.Rate := 0;
-	 DefaultChange := 0;
+         DefaultChange := 0;
       end if;
       
       -- Insert some random volatility
       Heart.Rate := 
-	Measures.LimitBPM(RandomNumber.UniformIntegerWithError(Heart.Rate,
+        Measures.LimitBPM(RandomNumber.UniformIntegerWithError(Heart.Rate,
 							       Volatility));
-      
+      PUT("Heart Rate1: ");
+      PUT(Heart.Rate);
+      New_Line;
    end Tick;
    
 end Heart;
