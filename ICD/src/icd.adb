@@ -47,6 +47,7 @@ package body ICD is
       end loop;
       -- When the tick is less than 6 after then icd is inited, the data is too little to consider whether there is ventricle fibrillation
       if Sum/6>=10 and InitCounter>6 then
+--        if Sum/6>=10 then
          Output:=True;
       end if;
       return Output;
@@ -135,10 +136,10 @@ package body ICD is
          ImpulseGenerator.SetImpulse(Generator,TachyJoules);
          -- Set the heart rate as the current heart rate plus above heart rate(15)
          Hrt.Rate:=HeartRate+AboveHeartRate;
-         ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
          PUT("ImpulseGenerator: ");
          PUT(ImpulseGeneratorcounter);
          New_Line;
+         ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
          PUT("HeartRate: ");
          PUT(HeartRate);
          New_Line;
@@ -150,6 +151,9 @@ package body ICD is
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
+         PUT("Reset the impulse: ");
+         PUT(Generator.Impulse);
+         New_Line;
          PUT("Done the Tachycardia treatment");
          New_Line;
       end if;
@@ -162,12 +166,22 @@ package body ICD is
    begin
       if ImpulseGeneratorcounter>0 then
          ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
+
+         PUT("Signals Joules: ");
+         PUT(JoulesToDeliver);
+         New_Line;
+         PUT("ImpulseGenerator: ");
+         PUT(ImpulseGeneratorcounter);
+         New_Line;
          ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
       else
           -- The treatment stops
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
+         PUT("Reset the impulse: ");
+         PUT(Generator.Impulse);
+         New_Line;
          PUT("Done the Vemtricle Fibrillation treatment");
          New_Line;
       end if;
@@ -197,6 +211,7 @@ package body ICD is
             if ActiveFlag=False then
                ImpulseGeneratorcounter:=10;
                ActiveFlag:=True;
+               CurrentHeartRate:=HeartRate;
             end if;
 
             -- Set the health type as tachycardia
