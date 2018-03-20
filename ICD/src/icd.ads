@@ -59,11 +59,13 @@ package ICD is
    procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
                                    Generator:in out ImpulseGenerator.GeneratorType;
                                    Hrt : in out Heart.HeartType;
+                                   HeartRate : in Measures.BPM;
                                    ActiveFlag: in out Boolean);
    
     -- The ICD will perform and call methods in impulse generator when Ventricle fibrillation happens
    procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
-                                              Generator: in out ImpulseGenerator.GeneratorType);
+                                              Generator: in out ImpulseGenerator.GeneratorType;
+                                              ActiveFlag: in out Boolean);
    
    -- Tick the clock and Check the health type of the patient, call by closedLoop
    -- Activeflag param records whether the ICD is calling the impulsegenerator 

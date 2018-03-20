@@ -92,9 +92,6 @@ package body ICD is
    procedure updateHeartRateHistory(Hrh: in out HeartRateHistory; HeartRate: in BPM; CurrentTime: in TickCount) is
       HistoryPro: Integer:= Hrh'Last;
    begin
---        Put("HistoryPro");
---        Put(HistoryPro);
---        New_Line;
       while HistoryPro>Hrh'First loop
          Hrh(HistoryPro):=(Rate => Hrh(HistoryPro-1).Rate,
                            Time => Hrh(HistoryPro-1).Time);
@@ -132,23 +129,23 @@ package body ICD is
    procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
                                    Generator:in out ImpulseGenerator.GeneratorType;
                                    Hrt : in out Heart.HeartType;
+                                   HeartRate: in BPM;
                                    ActiveFlag: in out Boolean) is
-      HeartRate: Measures.BPM;
       TachyJoules: Measures.Joules:=2;
    begin
       if ImpulseGeneratorcounter>0 then
          -- Set the Joules of the impulse deliver to haert when Tachycardia
          ImpulseGenerator.SetImpulse(Generator,TachyJoules);
-         -- Set the
-         Heart.GetRate(Heart => Hrt,
-                       Rate  => HeartRate);
+         -- Set the heart rate as the current heart rate plus above heart rate(15)
          Hrt.Rate:=HeartRate+AboveHeartRate;
          ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
          PUT("ImpulseGenerator: ");
          PUT(ImpulseGeneratorcounter);
          New_Line;
       else
+         -- The treatment stops
          ActiveFlag:=False;
+         -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
          PUT("Down the treatment");
          New_Line;
@@ -157,10 +154,20 @@ package body ICD is
 
 
    procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
-                                              Generator:in out ImpulseGenerator.GeneratorType) is
+                                              Generator:in out ImpulseGenerator.GeneratorType;
+                                              ActiveFlag: in out Boolean) is
    begin
-      ImpulseGeneratorcounter:=1;
-      ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
+      if ImpulseGeneratorcounter>0 then
+         ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
+         ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
+      else
+          -- The treatment stops
+         ActiveFlag:=False;
+         -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
+         ImpulseGenerator.SetImpulse(Generator,J => 0);
+         PUT("Down the treatment");
+         New_Line;
+      end if;
    end activeWhenVentricle_fibrillation;
 
 
@@ -172,35 +179,44 @@ package body ICD is
                   Hrt : in out Heart.HeartType;
                   ImpulseGeneratorcounter: in out Integer;
                   ActiveFlag: in out Boolean) is
+   CurrentHeartRate:Measures.BPM;
    begin
       if Icd.IsOn then
-         updateHeartRateHistory(Hrh         => Hrh,
-                          HeartRate   => HeartRate,
-                               CurrentTime => CurrentTime);
-         if isTachycardia(HeartRate => HeartRate) then
-            ActiveFlag:=True;
+            -- update the current time and heart rate in the heart rate history array(hrh).
+            updateHeartRateHistory(Hrh         => Hrh,
+                                   HeartRate   => HeartRate,
+                                   CurrentTime => CurrentTime);
+            if isTachycardia(HeartRate => HeartRate) then
+               -- When detected the tachycardia and it is not under a treatment, set the 10 signals and start the treatment
+            if ActiveFlag=False then
+               ImpulseGeneratorcounter:=10;
+               CurrentHeartRate:=HeartRate;
+               ActiveFlag:=True;
+            end if;
+
+            -- Set the health type as tachycardia
             Icd.HealthType:=Tachycardia;
             activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
                                   Generator               => Generator ,
                                   Hrt                     => Hrt,
-                                  ActiveFlag              => ActiveFlag);
-
+                                  ActiveFlag              => ActiveFlag,
+                                  HeartRate   => CurrentHeartRate);
          elsif isVentricleFibrillation(Hrh => Hrh) then
-            if CurrentTime>6 then
---                 if ActiveFlag=False then
-                  Icd.HealthType:=Ventricle_fibrillation;
-                  activeWhenVentricle_fibrillation(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
-                                                   Generator               => Generator);
---                    ActiveFlag:=True;
---                 end if;
+            -- When detected the tachycardia and it is not under a treatment, set the 1 signals and start the treatment
+            if ActiveFlag=False then
+               ImpulseGeneratorcounter:=1;
+               ActiveFlag:=True;
             end if;
+
+            -- Set the health type as ventricle fibrillation
+            Icd.HealthType:=Ventricle_fibrillation;
+            activeWhenVentricle_fibrillation(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
+                                             Generator               => Generator,
+                                             ActiveFlag              => ActiveFlag);
          else
+            -- Set the health type as healthy
             Icd.HealthType:=Healthy;
          end if;
       end if;
---        Put(Icd.HealthType'Image);
---        New_Line;
    end Tick;
-
-
 end ICD;
