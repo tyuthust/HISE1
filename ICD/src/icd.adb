@@ -126,26 +126,35 @@ package body ICD is
 
    procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
                                    Generator:in out ImpulseGenerator.GeneratorType;
-                                   Hrt : in out Heart.HeartType;
-                                   HeartRate: in BPM;
-                                   ActiveFlag: in out Boolean) is
+                                   HeartRate : in Measures.BPM;
+                                   ActiveFlag: in out Boolean;
+                                   TickTimesInOneMinute: in Integer;
+                                   ImpulseTickFloat:in out Float;
+                                   ImpulseTickFlag: in out Boolean) is
       TachyJoules: Measures.Joules:=2;
+      TempHeartRate: Measures.BPM;
+      ReciprocalTickFloat: Float range 0.00..1.00 :=0.00;
    begin
-      if ImpulseGeneratorcounter>0 then
+      if ImpulseGeneratorcounter>0 and ImpulseTickFlag=True then
+--        if ImpulseGeneratorcounter>0 then
          -- Set the Joules of the impulse deliver to haert when Tachycardia
          ImpulseGenerator.SetImpulse(Generator,TachyJoules);
          -- Set the heart rate as the current heart rate plus above heart rate(15)
-         Hrt.Rate:=HeartRate+AboveHeartRate;
+         TempHeartRate:=HeartRate+AboveHeartRate;
          PUT("ImpulseGenerator: ");
          PUT(ImpulseGeneratorcounter);
          New_Line;
+         ReciprocalTickFloat:=Float(TempHeartRate)/Float(TickTimesInOneMinute);
+--           PUT("TempHeartrate/TickTimesInOneMinute : ");
+--           PUT(ReciprocalTickFloat'Image);
+--           New_Line;
+         -- Add the temp reciprocalTick in the Impulse tick progress
+         ImpulseTickFloat:=ImpulseTickFloat+ReciprocalTickFloat;
+         PUT("ImpulseTickFloat : ");
+         PUT(ImpulseTickFloat'Image);
+         New_Line;
          ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
-         PUT("HeartRate: ");
-         PUT(HeartRate);
-         New_Line;
-         PUT("Signals heart rate: ");
-         PUT(Hrt.Rate);
-         New_Line;
+         ImpulseTickFlag:=False;
       else
          -- The treatment stops
          ActiveFlag:=False;
@@ -193,9 +202,11 @@ package body ICD is
                   HeartRate: in BPM;
                   CurrentTime:in TickCount;
                   Generator:in out ImpulseGenerator.GeneratorType;
-                  Hrt : in out Heart.HeartType;
+                  TickTimesInOneMinute: in Integer;
+                  ImpulseTickFloat: in out Float;
                   ImpulseGeneratorcounter: in out Integer;
-                  ActiveFlag: in out Boolean) is
+                  ActiveFlag: in out Boolean;
+                  ImpulseTickFlag: in out Boolean) is
    begin
       if Icd.IsOn then
          if InitCounter>=0 then
@@ -219,8 +230,10 @@ package body ICD is
 
             activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
                                   Generator               => Generator ,
-                                  Hrt                     => Hrt,
+                                  TickTimesInOneMinute =>TickTimesInOneMinute,
+                                  ImpulseTickFloat =>ImpulseTickFloat,
                                   ActiveFlag              => ActiveFlag,
+                                  ImpulseTickFlag =>ImpulseTickFlag,
                                   HeartRate   => CurrentHeartRate);
          elsif isVentricleFibrillation(Hrh => Hrh) then
             -- When detected the tachycardia and it is not under a treatment, set the 1 signals and start the treatment

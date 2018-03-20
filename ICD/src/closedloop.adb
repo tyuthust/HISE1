@@ -31,16 +31,27 @@ package body ClosedLoop is
    -- stores the current message read from the network (if one was available)
    Msg : Network.NetworkMessage;
    
-   -- stores some history information on measured heart rate
-   --History : Network.RateHistory;
-   --HistoryPos : Integer := History'First;
    CurrentTime : TickCount := 0;  -- current time as measured in ticks
-   
-   --Para using by ICD
+  
+   -- The array records the previous 7 heart rate histories 
    ICDHistory : ICD.HeartRateHistory;
+   
+   -- The counter records how many times a impulse generator should impulse the heart
    Impulsecounter: Integer range 0..10:=0;
+   
    -- Treatment active flag
    TreatmentActiveFlag: Boolean:=False;
+  
+   -- Records how many ticks happen in one minute
+   TickTimesInOneMinute: constant Integer:=600;
+  
+   -- The float records the progress of a beats, when this value is greater than 1, 
+   -- address one impulse tick procedure and reset this variable as the mod result
+   ImpulseTickFloat: Float range 0.00..1.00:=0.00;
+  
+   -- It records whether a impulse tick procedure is done, if it has done, set as true, otherwise as false
+   ImpulseTickFlag: Boolean:=False;
+   
    
    -- check whether the candidate Principal is a known one
    function CheckIsKnownPrincipal(
@@ -366,9 +377,11 @@ package body ClosedLoop is
                HeartRate=>HeartRate,
                CurrentTime=>CurrentTime,
                Generator => Generator,
-               Hrt=>Hrt,
+               TickTimesInOneMinute =>TickTimesInOneMinute,
+               ImpulseTickFloat =>ImpulseTickFloat ,                               
                ImpulseGeneratorcounter =>Impulsecounter,
-               ActiveFlag=>TreatmentActiveFlag);
+               ActiveFlag=>TreatmentActiveFlag,
+               ImpulseTickFlag =>ImpulseTickFlag );
 
       ImpulseGenerator.Tick(Generator, Hrt);
 

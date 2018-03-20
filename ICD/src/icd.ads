@@ -58,9 +58,12 @@ package ICD is
    -- The ICD will perform and call methods in impulse generator when Tachycardia happens
    procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
                                    Generator:in out ImpulseGenerator.GeneratorType;
-                                   Hrt : in out Heart.HeartType;
                                    HeartRate : in Measures.BPM;
-                                   ActiveFlag: in out Boolean);
+                                   ActiveFlag: in out Boolean;
+                                   TickTimesInOneMinute: in Integer;
+                                   ImpulseTickFloat: in out Float;
+                                   ImpulseTickFlag: in out Boolean);
+      
    
     -- The ICD will perform and call methods in impulse generator when Ventricle fibrillation happens
    procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
@@ -74,7 +77,9 @@ package ICD is
                   HeartRate: in BPM;
                   CurrentTime:in TickCount;
                   Generator:in out ImpulseGenerator.GeneratorType;
-                  Hrt : in out Heart.HeartType;
+                  TickTimesInOneMinute: in Integer;
+                  ImpulseTickFloat: in out Float;
                   ImpulseGeneratorcounter: in out Integer;
-                  ActiveFlag: in out Boolean);
+                  ActiveFlag: in out Boolean;
+                  ImpulseTickFlag: in out Boolean);
 end ICD;
