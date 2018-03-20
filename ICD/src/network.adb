@@ -135,7 +135,7 @@ package body Network is
             Principal.DebugPrintPrincipalPtr(Message.HSource);
             Put(")"); New_Line;
          when ReadRateHistoryResponse =>
-           Put("ReadRateHistoryRequest (HDestination: ");
+           Put("ReadRateHistoryResponse (HDestination: ");
            Principal.DebugPrintPrincipalPtr(Message.HDestination);
            Put("; History: "); 
            for Index in Message.History'Range loop

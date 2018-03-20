@@ -4,7 +4,8 @@ with Measures; use Measures;
 with ImpulseGenerator;
 
 -- This package provides some basic functinality to provide 
--- the necessary calculations of the impulse to be delivered based on the measured heart rate
+-- the necessary calculations of the impulse 
+-- to be delivered based on the measured heart rate
 package ICD is 
  -- The record type for a heart rate monitor
 
@@ -13,7 +14,8 @@ package ICD is
    type PatientHeartHealthType is (Healthy, Tachycardia,Ventricle_fibrillation);
 
    HISTORY_LENGTH: constant Integer := 6;
-   type HeartRateHistory is array (Integer range 0..HISTORY_LENGTH) of Network.RateRecord;
+   type HeartRateHistory is 
+     array (Integer range 0..HISTORY_LENGTH) of Network.RateRecord;
 
    type ICDType is
        record
@@ -26,21 +28,32 @@ package ICD is
    function isTachycardia(HeartRate: in BPM)
                           return boolean;
 
-   -- Determine whether the past period of heart rate history belongs to Ventricle fibrillation
+   -- Determine whether the past period of heart rate history 
+   -- belongs to Ventricle fibrillation
    function isVentricleFibrillation(Hrh: in HeartRateHistory)
                                     return boolean;
    
    -- Set the TachyBound field
-   function changeTachycardiaUpperBoundSet(TachyB: in Measures.BPM;Icd: in ICDType) return Boolean;
+   function changeTachycardiaUpperBoundSet(
+                                           TachyB: in Measures.BPM;
+                                           Icd: in ICDType) return Boolean;
    
    -- Set the number of joules to deliver filed
-   function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: in ICDType) return Boolean;
+   function changeJoulesDeliverNumForVentricle_fibrillation(
+                                           JoulesToD: in Measures.Joules;
+                                           Icd: in ICDType) return Boolean;
    
    -- Read the TachyBound field and joules to deliver filed
-   function readSet(TachyB: out Measures.BPM;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean;
+   function readSet(
+                    TachyB: out Measures.BPM;
+                    JoulesToD: out Measures.Joules;
+                    Icd: in ICDType) return Boolean;
    
    -- Update the heart rate history
-   procedure updateHeartRateHistory(Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount);
+   procedure updateHeartRateHistory(
+                                    Hrh: in out HeartRateHistory;
+                                    HeartRate: in BPM;
+                                    CurrentTime: in TickCount);
    
    -- Init the Heart Rate History Array
    procedure Init(Hrh: in out HeartRateHistory;Icd: out ICDType);
@@ -58,9 +71,11 @@ package ICD is
   
       
    
-    -- The ICD will perform and call methods in impulse generator when Ventricle fibrillation happens
-   procedure activeWhenVentricle_fibrillation(Generator: in out ImpulseGenerator.GeneratorType;
-                                              Ventricle_fibrillationActiveFlag: in out Boolean);
+   -- The ICD will perform and call methods 
+   -- in impulse generator when Ventricle fibrillation happens
+   procedure activeWhenVentricle_fibrillation(
+                            Generator: in out ImpulseGenerator.GeneratorType;
+                            Ventricle_fibrillationActiveFlag: in out Boolean);
    
     -- The ICD will perform and call methods in impulse generator when Tachycardia happens
    procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;

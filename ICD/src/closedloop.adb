@@ -85,22 +85,16 @@ package body ClosedLoop is
                                   return Boolean is
       IsAuthorised : Boolean := False;
    begin
-      IsAuthorised := Principal.HasRole(P => CandidatePrincipal,R => AuthorisedRole);
+      IsAuthorised := Principal.HasRole(
+                                        P => CandidatePrincipal,
+                                        R => AuthorisedRole);
 --      if (not IsAuthorised) then
 --         Put_Line("This is NOT an Authorised Role");
 --      end if;
          return IsAuthorised;
    end CheckIsAuthorisedRoles;
   
-  -- This procedure should create three Principals: one Patient, one 
-  -- Cardiologist and one Clinical Assistant. These are the authorised 
-  -- principals for the device, i.e. the Patient is one who has the
-  -- device implanted in them, the Cardiologist is the patient's assigned
-  -- cardiologist and the Clinical Assistant is their assigned
-  -- clinical assistant.
-  -- It should then create and initialise each of the components of the
-  -- closed loop system, with the Network initialised so that the three
-  -- principals mentioned above are the "known" principals (see network.ads)
+   -- Call this function to init all the elements in the system
    procedure Init is
       
    begin
@@ -122,11 +116,10 @@ package body ClosedLoop is
       HRM.Init(Monitor);
       ImpulseGenerator.Init(Generator);
       Network.Init(Net,KnownPrincipals);
-
       ICD.Init(Hrh => ICDHistory,Icd => IcdUnit);
+      
+      
       ICD.On(Icd => IcdUnit);
-      
-      
       HRM.On(Monitor, Hrt);
       ImpulseGenerator.On(Generator);
       
@@ -134,11 +127,7 @@ package body ClosedLoop is
       ImpulseGenerator.SetImpulse(Generator, 0); 
    end Init;
   
-  -- This procesure simulates one clock tick (decisecond)
-  -- Besides calling the Tick procedures of each of the closed-loop
-  -- components, it also needs to do things like handling network messages
-  -- from authorised principals (e.g. by calling procedures of the ICD 
-  -- package that you will write)
+  -- Call the function to step the system.
    procedure Tick is
 
       
@@ -150,8 +139,8 @@ package body ClosedLoop is
       
    begin
       Put_Line("**************TICK_START************** ");
-      -- read messages from the network but don't act on them here,
-      -- just print them out
+      -- read messages from the network and act based on
+      -- Message type
       Network.GetNewMessage(Net,MsgAvailable,Msg);
       if (MsgAvailable) then
          -- feature based on the MSG
@@ -182,7 +171,7 @@ package body ClosedLoop is
                                            )
                     )
                  ) then
-              
+                  -- Turn On the ICD
                   Put("Set Mode On");New_Line;
                   ICD.On(Icd => IcdUnit);
                   if(ICD.IsOn(IcdUnit)) then
@@ -199,8 +188,10 @@ package body ClosedLoop is
                Put("Try ModeOff");New_Line;
                if(
                   CheckIsKnownPrincipal(
-                                        CandidatePrincipalPtr=>Msg.MOffSource,
-                                        KnownPrincipalArray => KnownPrincipals.all)
+                                        CandidatePrincipalPtr=>
+                                          Msg.MOffSource,
+                                        KnownPrincipalArray => 
+                                          KnownPrincipals.all)
                   and (
                        CheckIsAuthorisedRoles(
                                               CandidatePrincipal => 
@@ -217,6 +208,7 @@ package body ClosedLoop is
                                                )
                     )
                  ) then
+                  -- turn off the ICD
                   Put("Set Mode Off");New_Line;
                   ICD.Off(Icd => IcdUnit);
                   if(ICD.IsOn(IcdUnit)) then
@@ -233,9 +225,13 @@ package body ClosedLoop is
                Put("Try Read Rate History");New_Line;
                if(
                   CheckIsKnownPrincipal(
-                                        CandidatePrincipalPtr=>Msg.HSource,
-                                        KnownPrincipalArray => KnownPrincipals.all)
+                                        CandidatePrincipalPtr=>
+                                          Msg.HSource,
+                                        KnownPrincipalArray => 
+                                          KnownPrincipals.all)
                  ) then
+                  -- read History from ICD history and save to the Msg history
+                  -- one by one
                   Put("Read Rate History");New_Line;
                   for i in MsgRateHistory'Range loop
                      MsgRateHistory(i) := ICDHistory(i);
@@ -274,6 +270,8 @@ package body ClosedLoop is
                                                )
                     )
                  ) then
+                  -- readSetting should only success if ICD is Off
+                  -- the judgement is implemented in the ICD
                   Put("Read Settings Success if Off");New_Line;
                   if(ICD.readSet(TachyB => MsgBPM,
                               JoulesToD => MsgJoules,
@@ -312,6 +310,7 @@ package body ClosedLoop is
                   Put("Try ChangeSettings Second Check OFF");New_Line;
 
                   --apply change to ICD
+                  --should only success if ICD is Off
                   if(
                      (
                       ICD.changeTachycardiaUpperBoundSet
@@ -345,12 +344,10 @@ package body ClosedLoop is
                      end if;
                      
                   end if;
-                    -- ICD is on
-                    -- Change success
-                    -- TODO
                end if;
                when others =>
-                  -- you should implement these for your own debugging if you wish
+               -- other info types is invalid
+               -- do nothing
                null;
          end case;
       end if;
@@ -391,9 +388,13 @@ package body ClosedLoop is
                ImpulseGeneratorcounter =>Impulsecounter,
                ActiveFlag=>TreatmentActiveFlag,
                ImpulseTickFlag =>ImpulseTickFlag,
-               Ventricle_fibrillationActiveFlag=>Ventricle_fibrillationActiveFlag);
+               Ventricle_fibrillationActiveFlag =>
+                 Ventricle_fibrillationActiveFlag);
       
-
+      -- Impulse tick will call if 
+      -- 1 VF is happening
+      -- or
+      -- 2 Tachycardia is reach the action bound
       if Ventricle_fibrillationActiveFlag then
          ImpulseGenerator.Tick(Generator, Hrt);
          Ventricle_fibrillationActiveFlag:=False;
@@ -412,12 +413,13 @@ package body ClosedLoop is
          New_Line;
       end if;
 
-      
+      -- other Tick will still act every Closedloop tick
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);
       
-      -- Reset the Joules of the impulse deliver to haert as 0 when once Tachycardia treatment is done 
+      -- Reset the Joules of the impulse deliver to heart as 0 
+      -- when once Tachycardia treatment is done 
       -- or ventricle fibrallation is done
       Hrt.Impulse:=0;
       
