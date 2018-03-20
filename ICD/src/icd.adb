@@ -18,6 +18,9 @@ package body ICD is
    -- The init counter records how many ticks after the icd has been init
    InitCounter: Integer:=-1;
 
+   -- The variable records the current heart rate when tachycardia is detected
+   CurrentHeartRate:Measures.BPM:=0;
+
    function isTachycardia(HeartRate: in BPM) return Boolean is
       Output: Boolean:=False;
    begin
@@ -136,12 +139,18 @@ package body ICD is
          PUT("ImpulseGenerator: ");
          PUT(ImpulseGeneratorcounter);
          New_Line;
+         PUT("HeartRate: ");
+         PUT(HeartRate);
+         New_Line;
+         PUT("Signals heart rate: ");
+         PUT(Hrt.Rate);
+         New_Line;
       else
          -- The treatment stops
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
-         PUT("Down the Ta treatment");
+         PUT("Done the Tachycardia treatment");
          New_Line;
       end if;
    end activeWhenTachycardia;
@@ -159,7 +168,7 @@ package body ICD is
          ActiveFlag:=False;
          -- Set the Joules of the impulse deliver to haert as 0 when Tachycardia treatment is done
          ImpulseGenerator.SetImpulse(Generator,J => 0);
-         PUT("Done the VF treatment");
+         PUT("Done the Vemtricle Fibrillation treatment");
          New_Line;
       end if;
    end activeWhenVentricle_fibrillation;
@@ -173,7 +182,6 @@ package body ICD is
                   Hrt : in out Heart.HeartType;
                   ImpulseGeneratorcounter: in out Integer;
                   ActiveFlag: in out Boolean) is
-   CurrentHeartRate:Measures.BPM;
    begin
       if Icd.IsOn then
          if InitCounter>=0 then
@@ -188,12 +196,12 @@ package body ICD is
             -- When detected the tachycardia and it is not under a treatment, set the 10 signals and start the treatment
             if ActiveFlag=False then
                ImpulseGeneratorcounter:=10;
-               CurrentHeartRate:=HeartRate;
                ActiveFlag:=True;
             end if;
 
             -- Set the health type as tachycardia
             Icd.HealthType:=Tachycardia;
+
             activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
                                   Generator               => Generator ,
                                   Hrt                     => Hrt,
