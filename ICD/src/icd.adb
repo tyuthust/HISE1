@@ -129,51 +129,70 @@ package body ICD is
       return Icd.IsOn;
    end IsOn;
 
-   procedure activeWhenTachycardia(ImpulseGeneratorcounter: out Integer;Generator:in out ImpulseGenerator.GeneratorType; Hrt : in out Heart.HeartType) is
+   procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
+                                   Generator:in out ImpulseGenerator.GeneratorType;
+                                   Hrt : in out Heart.HeartType;
+                                   ActiveFlag: in out Boolean) is
       HeartRate: Measures.BPM;
       TachyJoules: Measures.Joules:=2;
    begin
-      -- Set the Joules of the impulse deliver to haert when Tachycardia
-      ImpulseGenerator.SetImpulse(Generator,TachyJoules);
-      -- Set the
-      ImpulseGeneratorcounter:=10;
-      Heart.GetRate(Heart => Hrt,
-                    Rate  => HeartRate);
-      HeartRate:=HeartRate+AboveHeartRate;
-      Hrt.Rate:=HeartRate;
+      if ImpulseGeneratorcounter>0 then
+         -- Set the Joules of the impulse deliver to haert when Tachycardia
+         ImpulseGenerator.SetImpulse(Generator,TachyJoules);
+         -- Set the
+         Heart.GetRate(Heart => Hrt,
+                       Rate  => HeartRate);
+         Hrt.Rate:=HeartRate+AboveHeartRate;
+         ImpulseGeneratorcounter:=ImpulseGeneratorcounter-1;
+         PUT("ImpulseGenerator: ");
+         PUT(ImpulseGeneratorcounter);
+         New_Line;
+      else
+         ActiveFlag:=False;
+         ImpulseGenerator.SetImpulse(Generator,J => 0);
+         PUT("Down the treatment");
+         New_Line;
+      end if;
    end activeWhenTachycardia;
 
 
-   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;Generator:in out ImpulseGenerator.GeneratorType) is
+   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
+                                              Generator:in out ImpulseGenerator.GeneratorType) is
    begin
       ImpulseGeneratorcounter:=1;
       ImpulseGenerator.SetImpulse(Generator,JoulesToDeliver);
    end activeWhenVentricle_fibrillation;
 
 
-   procedure Tick(Icd: in out ICDType;Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount;Generator:in out ImpulseGenerator.GeneratorType;Hrt : in out Heart.HeartType;ImpulseGeneratorcounter: in out Integer;ActiveFlag: in out Boolean) is
+   procedure Tick(Icd: in out ICDType;
+                  Hrh: in out HeartRateHistory;
+                  HeartRate: in BPM;
+                  CurrentTime:in TickCount;
+                  Generator:in out ImpulseGenerator.GeneratorType;
+                  Hrt : in out Heart.HeartType;
+                  ImpulseGeneratorcounter: in out Integer;
+                  ActiveFlag: in out Boolean) is
    begin
       if Icd.IsOn then
          updateHeartRateHistory(Hrh         => Hrh,
                           HeartRate   => HeartRate,
                                CurrentTime => CurrentTime);
          if isTachycardia(HeartRate => HeartRate) then
-            New_Line;
+            ActiveFlag:=True;
             Icd.HealthType:=Tachycardia;
-            if ActiveFlag=False then
-               activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
-                                     Generator               => Generator ,
-                                     Hrt                     => Hrt);
-               ActiveFlag:=True;
-            end if;
+            activeWhenTachycardia(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
+                                  Generator               => Generator ,
+                                  Hrt                     => Hrt,
+                                  ActiveFlag              => ActiveFlag);
+
          elsif isVentricleFibrillation(Hrh => Hrh) then
             if CurrentTime>6 then
-               if ActiveFlag=False then
+--                 if ActiveFlag=False then
                   Icd.HealthType:=Ventricle_fibrillation;
                   activeWhenVentricle_fibrillation(ImpulseGeneratorcounter => ImpulseGeneratorcounter,
                                                    Generator               => Generator);
-                  ActiveFlag:=True;
-               end if;
+--                    ActiveFlag:=True;
+--                 end if;
             end if;
          else
             Icd.HealthType:=Healthy;
