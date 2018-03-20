@@ -9,35 +9,35 @@ package ICD is
  -- The record type for a heart rate monitor
 
    
--- Various patient heart's health type
-type PatientHeartHealthType is (Healthy, Tachycardia,Ventricle_fibrillation);
+   -- Various patient heart's health type
+   type PatientHeartHealthType is (Healthy, Tachycardia,Ventricle_fibrillation);
 
-HISTORY_LENGTH: constant Integer := 6;
-type HeartRateHistory is array (Integer range 0..HISTORY_LENGTH) of Network.RateRecord;
+   HISTORY_LENGTH: constant Integer := 6;
+   type HeartRateHistory is array (Integer range 0..HISTORY_LENGTH) of Network.RateRecord;
 
-type ICDType is
-    record
--- The measure heart rate for the heart
-       HealthType : PatientHeartHealthType;
-       IsOn : Boolean;  -- Indicates whether the ICD is on.
+   type ICDType is
+       record
+         -- The measure heart rate for the heart
+         HealthType : PatientHeartHealthType;
+         IsOn : Boolean;  -- Indicates whether the ICD is on.
     end record;   
 
--- Determine whether the current heart rate belongs to Tachycardia
+   -- Determine whether the current heart rate belongs to Tachycardia
    function isTachycardia(HeartRate: in BPM)
                           return boolean;
 
--- Determine whether the past period of heart rate history belongs to Ventricle fibrillation
+   -- Determine whether the past period of heart rate history belongs to Ventricle fibrillation
    function isVentricleFibrillation(Hrh: in HeartRateHistory)
                                     return boolean;
    
    -- Set the TachyBound field
-   function changeTachycardiaUpperBoundSet(TachyB: in Integer;Icd: in ICDType) return Boolean;
+   function changeTachycardiaUpperBoundSet(TachyB: in Measures.BPM;Icd: in ICDType) return Boolean;
    
    -- Set the number of joules to deliver filed
    function changeJoulesDeliverNumForVentricle_fibrillation(JoulesToD: in Measures.Joules;Icd: in ICDType) return Boolean;
    
    -- Read the TachyBound field and joules to deliver filed
-   function readSet(TachyB: out Integer;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean;
+   function readSet(TachyB: out Measures.BPM;JoulesToD: out Measures.Joules;Icd: in ICDType) return Boolean;
    
    -- Update the heart rate history
    procedure updateHeartRateHistory(Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount);
@@ -56,12 +56,25 @@ type ICDType is
    --# return B.IsOn;
    
    -- The ICD will perform and call methods in impulse generator when Tachycardia happens
-   procedure activeWhenTachycardia(ImpulseGeneratorcounter: out Integer;Generator:in out ImpulseGenerator.GeneratorType; Hrt : in out Heart.HeartType);
+   procedure activeWhenTachycardia(ImpulseGeneratorcounter: in out Integer;
+                                   Generator:in out ImpulseGenerator.GeneratorType;
+                                   Hrt : in out Heart.HeartType;
+                                   HeartRate : in Measures.BPM;
+                                   ActiveFlag: in out Boolean);
    
     -- The ICD will perform and call methods in impulse generator when Ventricle fibrillation happens
-   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;Generator: in out ImpulseGenerator.GeneratorType);
+   procedure activeWhenVentricle_fibrillation(ImpulseGeneratorcounter: in out Integer;
+                                              Generator: in out ImpulseGenerator.GeneratorType;
+                                              ActiveFlag: in out Boolean);
    
    -- Tick the clock and Check the health type of the patient, call by closedLoop
    -- Activeflag param records whether the ICD is calling the impulsegenerator 
-   procedure Tick(Icd: in out ICDType;Hrh: in out HeartRateHistory;HeartRate: in BPM;CurrentTime:in TickCount;Generator:in out ImpulseGenerator.GeneratorType;Hrt : in out Heart.HeartType;ImpulseGeneratorcounter: in out Integer;ActiveFlag: in out Boolean);
+   procedure Tick(Icd: in out ICDType;
+                  Hrh: in out HeartRateHistory;
+                  HeartRate: in BPM;
+                  CurrentTime:in TickCount;
+                  Generator:in out ImpulseGenerator.GeneratorType;
+                  Hrt : in out Heart.HeartType;
+                  ImpulseGeneratorcounter: in out Integer;
+                  ActiveFlag: in out Boolean);
 end ICD;
