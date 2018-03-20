@@ -128,6 +128,7 @@ package body ClosedLoop is
       MsgJoules : Measures.Joules;
       MsgBPM : Measures.BPM;
       sendMSg : Network.NetworkMessage;
+      MsgRateHistory : Network.RateHistory;
    begin
       -- read messages from the network but don't act on them here,
       -- just print them out
@@ -215,13 +216,17 @@ package body ClosedLoop is
                                         CandidatePrincipalPtr=>Msg.HSource,
                                         KnownPrincipalArray => KnownPrincipals.all)
                  ) then
-                  
                   Put("Read Rate History");New_Line;
-                  Put("ReadRateHistoryRequest (HSource: ");
-                  Principal.DebugPrintPrincipalPtr(Msg.HSource);
-                  Put(")"); New_Line;
+                  sendMSg  :=(MessageType=>Network.ReadRateHistoryResponse,
+                                 HDestination=>Msg.HSource,
+                              History=>History);
+                  
+                  Network.SendMessage(Net => Net,Message => sendMSg);
                   
                end if;
+               
+               
+               
             when Network.ReadSettingsRequest =>
                -- Principal should be known
                -- only Card and Clin can access
@@ -373,7 +378,7 @@ package body ClosedLoop is
       end if;
       
       -- Tick all components to simulate the passage of one decisecond
-      ImpulseGenerator.Tick(Generator, Hrt);
+
       ICD.Tick(Icd => IcdUnit,
                Hrh=>ICDHistory,
                HeartRate=>HeartRate,
@@ -382,6 +387,7 @@ package body ClosedLoop is
                Hrt=>Hrt,
                ImpulseGeneratorcounter =>Impulsecounter,
                ActiveFlag=>TreatmentActiveFlag);
+      ImpulseGenerator.Tick(Generator, Hrt);
       HRM.Tick(Monitor, Hrt);
       Heart.Tick(Hrt);
       Network.Tick(Net);
