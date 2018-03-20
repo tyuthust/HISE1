@@ -32,8 +32,8 @@ package body ClosedLoop is
    Msg : Network.NetworkMessage;
    
    -- stores some history information on measured heart rate
-   History : Network.RateHistory;
-   HistoryPos : Integer := History'First;
+   --History : Network.RateHistory;
+   --HistoryPos : Integer := History'First;
    CurrentTime : TickCount := 0;  -- current time as measured in ticks
    
    --Para using by ICD
@@ -128,6 +128,7 @@ package body ClosedLoop is
       MsgJoules : Measures.Joules;
       MsgBPM : Measures.BPM;
       sendMSg : Network.NetworkMessage;
+      MsgRateHistory:Network.RateHistory;
    begin
       Put_Line("**************TICK_START************** ");
       -- read messages from the network but don't act on them here,
@@ -217,9 +218,12 @@ package body ClosedLoop is
                                         KnownPrincipalArray => KnownPrincipals.all)
                  ) then
                   Put("Read Rate History");New_Line;
+                  for i in MsgRateHistory'Range loop
+                     MsgRateHistory(i) := ICDHistory(i);
+                  end loop;
                   sendMSg  :=(MessageType=>Network.ReadRateHistoryResponse,
                                  HDestination=>Msg.HSource,
-                              History=>History);
+                              History=>MsgRateHistory);
                   
                   Network.SendMessage(Net => Net,Message => sendMSg);
                   
@@ -269,25 +273,7 @@ package body ClosedLoop is
                                 RJoulesToDeliver=>Measures.MIN_JOULES);
                       Network.SendMessage(Net => Net,Message => sendMSg);
                   end if;
-               end if;
-            -- will not enter here   
-            when Network.ReadRateHistoryResponse =>
-               if(
-                  CheckIsKnownPrincipal(
-                                        CandidatePrincipalPtr=>Msg.HDestination,
-                                        KnownPrincipalArray => KnownPrincipals.all)
-                 ) then
-                  Put("ReadRateHistoryRequest (HDestination: ");
-                  Principal.DebugPrintPrincipalPtr(Msg.HDestination);
-                  Put("; History: "); 
-                  for Index in Msg.History'Range loop
-                     Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Rate));
-                     Put(" @ "); Ada.Integer_Text_IO.Put(Integer(Msg.History(Index).Time));
-                     Put(", ");
-                  end loop;
-                  Put(")"); New_Line;
-               end if;
-               
+               end if;               
             when Network.ChangeSettingsRequest =>
                -- Principal should be known
                -- only Card can access
@@ -312,12 +298,14 @@ package body ClosedLoop is
                       ICD.changeTachycardiaUpperBoundSet
                         (
                          Icd => IcdUnit,
-                         TachyB => Msg.CTachyBound)
+                         TachyB => 
+                           Measures.LimitBPM(Input => Msg.CTachyBound))
                       and
                         ICD.changeJoulesDeliverNumForVentricle_fibrillation
                           (
                            Icd => IcdUnit,
-                           JoulesToD => Msg.CJoulesToDeliver)
+                           JoulesToD => 
+                             Measures.LimitJoules(Msg.CJoulesToDeliver))
                      )
 
                     ) then
@@ -371,11 +359,6 @@ package body ClosedLoop is
       Put(Item => HeartRate);
       New_Line;
       
-      -- record the initial history only
-      if HistoryPos <= History'Last then
-         History(HistoryPos) := (Rate => HeartRate, Time => CurrentTime);
-         HistoryPos := HistoryPos + 1;
-      end if;
       
       -- Tick all components to simulate the passage of one decisecond
       ICD.Tick(Icd => IcdUnit,
