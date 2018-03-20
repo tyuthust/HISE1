@@ -128,8 +128,8 @@ package body ClosedLoop is
       MsgJoules : Measures.Joules;
       MsgBPM : Measures.BPM;
       sendMSg : Network.NetworkMessage;
-      MsgRateHistory : Network.RateHistory;
    begin
+      Put_Line("**************TICK_START************** ");
       -- read messages from the network but don't act on them here,
       -- just print them out
       Network.GetNewMessage(Net,MsgAvailable,Msg);
